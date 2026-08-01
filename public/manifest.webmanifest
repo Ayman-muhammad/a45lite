@@ -1,0 +1,17 @@
+{
+  "name": "45LITE — Verified Jobs for Kenyan Professionals",
+  "short_name": "45LITE",
+  "description": "Verified job discovery and career optimization for Kenyan professionals and academics.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B0F19",
+  "theme_color": "#F97316",
+  "icons": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
