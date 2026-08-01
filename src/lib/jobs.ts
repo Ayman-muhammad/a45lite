@@ -101,12 +101,12 @@ export function postedLabel(created: string) {
 }
 
 export type JobFilters = {
-  q?: string;
-  jobType?: string;
-  companyType?: string;
-  location?: string;
-  experience?: string;
-  feed?: string;
+  q?: string | undefined;
+  jobType?: string | undefined;
+  companyType?: string | undefined;
+  location?: string | undefined;
+  experience?: string | undefined;
+  feed?: string | undefined;
 };
 
 function applyFeedFilter(
