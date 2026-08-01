@@ -16,11 +16,11 @@ import {
 import { cn } from "@/lib/utils";
 
 type SearchParams = {
-  q?: string;
-  jobType?: string;
-  companyType?: string;
-  location?: string;
-  experience?: string;
+  q?: string | undefined;
+  jobType?: string | undefined;
+  companyType?: string | undefined;
+  location?: string | undefined;
+  experience?: string | undefined;
 };
 
 const SMART_CATEGORIES = [
@@ -113,7 +113,7 @@ function SearchPage() {
   });
 
   function update(next: Partial<SearchParams>) {
-    navigate({ search: (prev) => ({ ...prev, ...next }) });
+    navigate({ search: (prev: SearchParams) => ({ ...prev, ...next }) });
   }
 
   function submit(event: React.FormEvent) {
