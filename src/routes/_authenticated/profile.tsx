@@ -6,6 +6,7 @@ import { AppShell } from "@/components/AppShell";
 import { useProfile, useSession } from "@/hooks/useSession";
 import { supabase } from "@/integrations/supabase/client";
 import { PREFERENCE_OPTIONS } from "@/lib/jobs";
+import type { TablesUpdate } from "@/integrations/supabase/types";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/profile")({
@@ -72,7 +73,7 @@ function ProfilePage() {
     },
   });
 
-  async function update(patch: Record<string, unknown>) {
+  async function update(patch: TablesUpdate<"profiles">) {
     if (!user) return;
     await supabase.from("profiles").update(patch).eq("id", user.id);
     queryClient.invalidateQueries({ queryKey: ["profile"] });
