@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
@@ -7,6 +8,7 @@ import { JobCard, JobCardSkeleton } from "@/components/JobCard";
 import { useProfile, useSession } from "@/hooks/useSession";
 import { supabase } from "@/integrations/supabase/client";
 import { daysUntil, FEED_FILTERS, fetchJobs, type Job } from "@/lib/jobs";
+import { syncJobs } from "@/lib/sync.functions";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
@@ -78,6 +80,59 @@ function Stat({ value, label }: { value: number | string; label: string }) {
   );
 }
 
+function SyncButton() {
+  const runSync = useServerFn(syncJobs);
+  const queryClient = useQueryClient();
+  const [syncing, setSyncing] = useState(false);
+
+  async function handleSync() {
+    setSyncing(true);
+    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(50);
+    try {
+      const result = await runSync();
+      if (!result.ok) {
+        toast.error(
+          result.error === "SOURCES_UNAVAILABLE"
+            ? "Job sources are unreachable right now. Try again shortly."
+            : "The verification engine is busy. Please retry in a moment.",
+        );
+        return;
+      }
+      if (result.found === 0) {
+        toast("No new listings since your last sync.");
+      } else {
+        toast.success(
+          `Sync complete — ${result.verified} verified, ${result.rejected} rejected by the AI verifier.`,
+        );
+      }
+      queryClient.invalidateQueries({ queryKey: ["jobs"] });
+    } catch {
+      toast.error("Sync failed. Check your connection and try again.");
+    } finally {
+      setSyncing(false);
+    }
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handleSync}
+      disabled={syncing}
+      className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground transition-transform active:scale-95 disabled:opacity-70"
+    >
+      <span
+        className={cn(
+          "inline-block h-2.5 w-2.5 rounded-full bg-primary-foreground",
+          syncing && "animate-ping",
+        )}
+      />
+      {syncing ? "Scanning & verifying…" : "Sync now"}
+    </button>
+  );
+}
+
+
+
 function Home() {
   const [feed, setFeed] = useState<string>("all");
   const { user } = useSession();
@@ -133,14 +188,23 @@ function Home() {
           <Stat value={stats.matching} label="Match your profile" />
           <Stat value={stats.closing} label="Deadlines this week" />
         </div>
-        {!user && (
-          <Link
-            to="/auth"
-            className="mt-6 inline-flex min-h-11 items-center rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground transition-shadow hover:shadow-glow"
-          >
-            Create your free account
-          </Link>
-        )}
+        <div className="mt-6 flex flex-wrap items-center gap-3">
+          {user ? (
+            <>
+              <SyncButton />
+              <span className="text-xs text-muted-foreground">
+                Every synced listing is auto-checked by our AI verifier before it reaches the feed.
+              </span>
+            </>
+          ) : (
+            <Link
+              to="/auth"
+              className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground transition-shadow hover:shadow-glow"
+            >
+              Create your free account
+            </Link>
+          )}
+        </div>
       </section>
 
       <div className="mt-6 flex gap-2 overflow-x-auto pb-1">
@@ -213,15 +277,29 @@ function Home() {
         {!isLoading && jobs?.length === 0 && (
           <div className="rounded-2xl border border-border bg-card p-8 text-center">
             <p className="text-sm text-muted-foreground">
-              No verified jobs in this category yet. Try another filter.
+              {user
+                ? "Your feed is empty. Run a sync — we'll pull live listings and the AI verifier will publish only the legitimate ones."
+                : "Sign in and run your first sync to pull live, AI-verified jobs into your feed."}
             </p>
-            <button
-              type="button"
-              onClick={() => setFeed("all")}
-              className="mt-4 min-h-11 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground"
-            >
-              Clear filters
-            </button>
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
+              {user ? (
+                <SyncButton />
+              ) : (
+                <Link
+                  to="/auth"
+                  className="inline-flex min-h-11 items-center rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground"
+                >
+                  Sign in to sync
+                </Link>
+              )}
+              <button
+                type="button"
+                onClick={() => setFeed("all")}
+                className="min-h-11 rounded-xl border border-primary/30 bg-card px-4 text-sm font-medium text-primary-light"
+              >
+                Clear filters
+              </button>
+            </div>
           </div>
         )}
       </section>

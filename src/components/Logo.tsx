@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils";
-
-const NODES = [0, 60, 120, 180, 240, 300];
+import markUrl from "@/assets/45lite-mark.png";
 
 export function OrbitalMark({ className, size = 40 }: { className?: string; size?: number }) {
   return (
@@ -9,47 +8,27 @@ export function OrbitalMark({ className, size = 40 }: { className?: string; size
       style={{ width: size, height: size }}
       aria-hidden="true"
     >
-      <span className="animate-orbit absolute inset-0">
+      <span className="animate-orbit absolute inset-[-12%]">
         <svg viewBox="0 0 100 100" className="h-full w-full">
           <circle
             cx="50"
             cy="50"
-            r="45"
+            r="47"
             fill="none"
             stroke="currentColor"
-            strokeWidth="5"
-            className="text-primary/70"
-          />
-          {NODES.map((deg, i) => {
-            const rad = ((deg - 90) * Math.PI) / 180;
-            return (
-              <circle
-                key={deg}
-                cx={50 + 45 * Math.cos(rad)}
-                cy={50 + 45 * Math.sin(rad)}
-                r={i % 2 === 0 ? 6 : 4}
-                className={i % 2 === 0 ? "fill-primary" : "fill-primary/35"}
-              />
-            );
-          })}
-        </svg>
-      </span>
-      <span className="animate-orbit-reverse absolute inset-[14%]">
-        <svg viewBox="0 0 100 100" className="h-full w-full">
-          <circle
-            cx="50"
-            cy="50"
-            r="46"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            className="text-primary-glow/50"
+            strokeWidth="1.5"
+            strokeDasharray="10 14"
+            className="text-primary/40"
           />
         </svg>
       </span>
-      <svg viewBox="0 0 100 100" className="relative h-[52%] w-[52%]">
-        <path d="M56 6 L26 56 H46 L40 94 L74 40 H52 Z" className="fill-primary-light" />
-      </svg>
+      <img
+        src={markUrl}
+        alt=""
+        width={1024}
+        height={1024}
+        className="relative h-full w-full object-contain drop-shadow-[0_0_10px_color-mix(in_oklab,var(--primary)_35%,transparent)]"
+      />
     </span>
   );
 }
