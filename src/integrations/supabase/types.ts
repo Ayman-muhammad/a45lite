@@ -133,6 +133,7 @@ export type Database = {
           source_url: string | null
           tags: string[]
           title: string
+          verification_notes: string | null
           verification_status: string
           verified_at: string | null
           verified_by: string | null
@@ -156,6 +157,7 @@ export type Database = {
           source_url?: string | null
           tags?: string[]
           title: string
+          verification_notes?: string | null
           verification_status?: string
           verified_at?: string | null
           verified_by?: string | null
@@ -179,6 +181,7 @@ export type Database = {
           source_url?: string | null
           tags?: string[]
           title?: string
+          verification_notes?: string | null
           verification_status?: string
           verified_at?: string | null
           verified_by?: string | null
