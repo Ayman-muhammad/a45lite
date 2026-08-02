@@ -277,15 +277,29 @@ function Home() {
         {!isLoading && jobs?.length === 0 && (
           <div className="rounded-2xl border border-border bg-card p-8 text-center">
             <p className="text-sm text-muted-foreground">
-              No verified jobs in this category yet. Try another filter.
+              {user
+                ? "Your feed is empty. Run a sync — we'll pull live listings and the AI verifier will publish only the legitimate ones."
+                : "Sign in and run your first sync to pull live, AI-verified jobs into your feed."}
             </p>
-            <button
-              type="button"
-              onClick={() => setFeed("all")}
-              className="mt-4 min-h-11 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground"
-            >
-              Clear filters
-            </button>
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
+              {user ? (
+                <SyncButton />
+              ) : (
+                <Link
+                  to="/auth"
+                  className="inline-flex min-h-11 items-center rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground"
+                >
+                  Sign in to sync
+                </Link>
+              )}
+              <button
+                type="button"
+                onClick={() => setFeed("all")}
+                className="min-h-11 rounded-xl border border-primary/30 bg-card px-4 text-sm font-medium text-primary-light"
+              >
+                Clear filters
+              </button>
+            </div>
           </div>
         )}
       </section>
