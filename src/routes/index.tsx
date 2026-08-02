@@ -80,6 +80,59 @@ function Stat({ value, label }: { value: number | string; label: string }) {
   );
 }
 
+function SyncButton() {
+  const runSync = useServerFn(syncJobs);
+  const queryClient = useQueryClient();
+  const [syncing, setSyncing] = useState(false);
+
+  async function handleSync() {
+    setSyncing(true);
+    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(50);
+    try {
+      const result = await runSync();
+      if (!result.ok) {
+        toast.error(
+          result.error === "SOURCES_UNAVAILABLE"
+            ? "Job sources are unreachable right now. Try again shortly."
+            : "The verification engine is busy. Please retry in a moment.",
+        );
+        return;
+      }
+      if (result.found === 0) {
+        toast("No new listings since your last sync.");
+      } else {
+        toast.success(
+          `Sync complete — ${result.verified} verified, ${result.rejected} rejected by the AI verifier.`,
+        );
+      }
+      queryClient.invalidateQueries({ queryKey: ["jobs"] });
+    } catch {
+      toast.error("Sync failed. Check your connection and try again.");
+    } finally {
+      setSyncing(false);
+    }
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handleSync}
+      disabled={syncing}
+      className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground transition-transform active:scale-95 disabled:opacity-70"
+    >
+      <span
+        className={cn(
+          "inline-block h-2.5 w-2.5 rounded-full bg-primary-foreground",
+          syncing && "animate-ping",
+        )}
+      />
+      {syncing ? "Scanning & verifying…" : "Sync now"}
+    </button>
+  );
+}
+
+
+
 function Home() {
   const [feed, setFeed] = useState<string>("all");
   const { user } = useSession();
