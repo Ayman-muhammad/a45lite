@@ -66,7 +66,13 @@ export const syncJobs = createServerFn({ method: "POST" })
         };
       });
 
-      await supabaseAdmin.from("jobs").upsert(rows, { onConflict: "title,company" , ignoreDuplicates: true });
+      const { error } = await supabaseAdmin.from("jobs").insert(rows);
+      if (error) {
+        // A duplicate in the batch aborts the whole insert — retry row by row.
+        for (const row of rows) {
+          await supabaseAdmin.from("jobs").insert(row);
+        }
+      }
     }
 
     return { ok: true as const, found: raw.length, verified, rejected };
