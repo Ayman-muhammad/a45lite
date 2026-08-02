@@ -188,14 +188,23 @@ function Home() {
           <Stat value={stats.matching} label="Match your profile" />
           <Stat value={stats.closing} label="Deadlines this week" />
         </div>
-        {!user && (
-          <Link
-            to="/auth"
-            className="mt-6 inline-flex min-h-11 items-center rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground transition-shadow hover:shadow-glow"
-          >
-            Create your free account
-          </Link>
-        )}
+        <div className="mt-6 flex flex-wrap items-center gap-3">
+          {user ? (
+            <>
+              <SyncButton />
+              <span className="text-xs text-muted-foreground">
+                Every synced listing is auto-checked by our AI verifier before it reaches the feed.
+              </span>
+            </>
+          ) : (
+            <Link
+              to="/auth"
+              className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground transition-shadow hover:shadow-glow"
+            >
+              Create your free account
+            </Link>
+          )}
+        </div>
       </section>
 
       <div className="mt-6 flex gap-2 overflow-x-auto pb-1">
