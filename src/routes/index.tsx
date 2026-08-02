@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
@@ -7,6 +8,7 @@ import { JobCard, JobCardSkeleton } from "@/components/JobCard";
 import { useProfile, useSession } from "@/hooks/useSession";
 import { supabase } from "@/integrations/supabase/client";
 import { daysUntil, FEED_FILTERS, fetchJobs, type Job } from "@/lib/jobs";
+import { syncJobs } from "@/lib/sync.functions";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
