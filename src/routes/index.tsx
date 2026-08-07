@@ -1,14 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { JobCard, JobCardSkeleton } from "@/components/JobCard";
+import { SyncPanel } from "@/components/SyncPanel";
 import { useProfile, useSession } from "@/hooks/useSession";
 import { supabase } from "@/integrations/supabase/client";
 import { daysUntil, FEED_FILTERS, fetchJobs, type Job } from "@/lib/jobs";
-import { syncJobs } from "@/lib/sync.functions";
+import { SOURCE_COUNTS } from "@/lib/sources";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
@@ -80,56 +80,28 @@ function Stat({ value, label }: { value: number | string; label: string }) {
   );
 }
 
-function SyncButton() {
-  const runSync = useServerFn(syncJobs);
-  const queryClient = useQueryClient();
-  const [syncing, setSyncing] = useState(false);
-
-  async function handleSync() {
-    setSyncing(true);
-    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(50);
-    try {
-      const result = await runSync();
-      if (!result.ok) {
-        toast.error(
-          result.error === "SOURCES_UNAVAILABLE"
-            ? "Job sources are unreachable right now. Try again shortly."
-            : "The verification engine is busy. Please retry in a moment.",
-        );
-        return;
-      }
-      if (result.found === 0) {
-        toast("No new listings since your last sync.");
-      } else {
-        toast.success(
-          `Sync complete — ${result.verified} verified, ${result.rejected} rejected by the AI verifier.`,
-        );
-      }
-      queryClient.invalidateQueries({ queryKey: ["jobs"] });
-    } catch {
-      toast.error("Sync failed. Check your connection and try again.");
-    } finally {
-      setSyncing(false);
-    }
-  }
-
+function SourceCoverage() {
   return (
-    <button
-      type="button"
-      onClick={handleSync}
-      disabled={syncing}
-      className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground transition-transform active:scale-95 disabled:opacity-70"
-    >
-      <span
-        className={cn(
-          "inline-block h-2.5 w-2.5 rounded-full bg-primary-foreground",
-          syncing && "animate-ping",
-        )}
-      />
-      {syncing ? "Scanning & verifying…" : "Sync now"}
-    </button>
+    <div className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+      {[
+        { label: "Kenyan universities", value: SOURCE_COUNTS.university, hint: "MKU, UoN, JKUAT, KU…" },
+        { label: "Turkana NGOs", value: SOURCE_COUNTS.ngo, hint: "TBI, DRC, NRC, IRC, LWF…" },
+        { label: "Corporate & tech", value: SOURCE_COUNTS.company, hint: "Safaricom, Microsoft, Equity…" },
+        { label: "Remote feeds", value: SOURCE_COUNTS.api, hint: "Remote-for-Africa roles" },
+      ].map((c) => (
+        <div
+          key={c.label}
+          className="rounded-2xl border border-border bg-card/60 p-4 transition-colors hover:border-primary/40"
+        >
+          <p className="text-data text-xl font-bold text-primary">{c.value}</p>
+          <p className="mt-1 text-xs font-semibold text-foreground">{c.label}</p>
+          <p className="mt-0.5 truncate text-[11px] text-muted-foreground">{c.hint}</p>
+        </div>
+      ))}
+    </div>
   );
 }
+
 
 
 
@@ -188,14 +160,10 @@ function Home() {
           <Stat value={stats.matching} label="Match your profile" />
           <Stat value={stats.closing} label="Deadlines this week" />
         </div>
+        <SourceCoverage />
         <div className="mt-6 flex flex-wrap items-center gap-3">
           {user ? (
-            <>
-              <SyncButton />
-              <span className="text-xs text-muted-foreground">
-                Every synced listing is auto-checked by our AI verifier before it reaches the feed.
-              </span>
-            </>
+<SyncPanel />
           ) : (
             <Link
               to="/auth"
@@ -283,7 +251,7 @@ function Home() {
             </p>
             <div className="mt-4 flex flex-wrap justify-center gap-2">
               {user ? (
-                <SyncButton />
+                <SyncPanel compact />
               ) : (
                 <Link
                   to="/auth"

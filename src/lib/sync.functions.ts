@@ -1,15 +1,80 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { SourceScope } from "@/lib/sources";
+
+export type SyncResult =
+  | {
+      ok: false;
+      error: string;
+      found: number;
+      verified: number;
+      rejected: number;
+      sources: SyncSourceReport[];
+    }
+  | {
+      ok: true;
+      found: number;
+      verified: number;
+      rejected: number;
+      sources: SyncSourceReport[];
+    };
+
+export type SyncSourceReport = {
+  id: string;
+  name: string;
+  url: string;
+  category: string;
+  status: string;
+  found: number;
+};
 
 export const syncJobs = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .handler(async () => {
+  .inputValidator((input: { scope?: SourceScope } | undefined) => ({
+    scope: (input?.scope ?? "all") as SourceScope,
+  }))
+  .handler(async ({ data }): Promise<SyncResult> => {
     const { fetchRawJobs, verifyBatch, chunk } = await import("@/lib/sync.server");
+    const { scrapeSources } = await import("@/lib/scrape.server");
+    const { sourcesForScope } = await import("@/lib/sources");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    let raw = await fetchRawJobs();
+    const scope = data.scope;
+    const pageSources = sourcesForScope(scope).filter((s) => s.category !== "api");
+    const useApis = scope === "all" || scope === "api";
+
+    const [scrape, apiJobs] = await Promise.all([
+      pageSources.length ? scrapeSources(pageSources) : Promise.resolve({ jobs: [], reports: [] }),
+      useApis ? fetchRawJobs() : Promise.resolve([]),
+    ]);
+
+    const apiReports: SyncSourceReport[] = useApis
+      ? [
+          {
+            id: "aggregators",
+            name: "Remote job feeds (Remotive + Arbeitnow)",
+            url: "https://remotive.com",
+            category: "api",
+            status: apiJobs.length ? "ok" : "empty",
+            found: apiJobs.length,
+          },
+        ]
+      : [];
+
+    const sources: SyncSourceReport[] = [...scrape.reports, ...apiReports].sort(
+      (a, b) => b.found - a.found,
+    );
+
+    let raw = [...scrape.jobs, ...apiJobs];
     if (raw.length === 0) {
-      return { ok: false as const, error: "SOURCES_UNAVAILABLE", found: 0, verified: 0, rejected: 0 };
+      return {
+        ok: false,
+        error: "SOURCES_UNAVAILABLE",
+        found: 0,
+        verified: 0,
+        rejected: 0,
+        sources,
+      };
     }
 
     // Skip listings we already hold (same title + company).
@@ -19,10 +84,10 @@ export const syncJobs = createServerFn({ method: "POST" })
     );
     raw = raw.filter((j) => !known.has(`${j.title.toLowerCase()}|${j.company.toLowerCase()}`));
     if (raw.length === 0) {
-      return { ok: true as const, found: 0, verified: 0, rejected: 0 };
+      return { ok: true, found: 0, verified: 0, rejected: 0, sources };
     }
 
-    raw = raw.slice(0, 40);
+    raw = raw.slice(0, 60);
     const now = new Date().toISOString();
     let verified = 0;
     let rejected = 0;
@@ -34,7 +99,7 @@ export const syncJobs = createServerFn({ method: "POST" })
       } catch (error) {
         const code = error instanceof Error ? error.message : "AI_UNAVAILABLE";
         if (verified === 0 && rejected === 0) {
-          return { ok: false as const, error: code, found: raw.length, verified, rejected };
+          return { ok: false, error: code, found: raw.length, verified, rejected, sources };
         }
         break;
       }
@@ -46,13 +111,14 @@ export const syncJobs = createServerFn({ method: "POST" })
         return {
           title: job.title,
           company: job.company,
-          company_type: v.company_type,
+          company_type: job.company_type_hint ?? v.company_type,
           location: v.location || job.location,
           job_type: v.job_type,
           experience_level: v.experience_level,
           description: job.description,
           requirements: v.requirements,
           salary_range: job.salary_range,
+          deadline: job.deadline ?? null,
           apply_url: job.apply_url,
           source: job.source,
           source_url: job.source_url,
@@ -75,5 +141,5 @@ export const syncJobs = createServerFn({ method: "POST" })
       }
     }
 
-    return { ok: true as const, found: raw.length, verified, rejected };
+    return { ok: true, found: raw.length, verified, rejected, sources };
   });
