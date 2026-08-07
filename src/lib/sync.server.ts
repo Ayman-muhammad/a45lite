@@ -12,7 +12,10 @@ export type RawJob = {
   is_remote: boolean;
   salary_range: string | null;
   posted_at: string | null;
+  deadline?: string | null;
+  company_type_hint?: string | undefined;
 };
+
 
 function stripHtml(html: string) {
   return html
