@@ -98,8 +98,8 @@ export function SyncPanel({ compact = false }: { compact?: boolean }) {
         </button>
         <p className="text-xs text-muted-foreground">
           {SOURCE_COUNTS.university} universities · {SOURCE_COUNTS.ngo} Turkana NGOs ·{" "}
-          {SOURCE_COUNTS.company} employers · {SOURCE_COUNTS.api} remote feeds — scraped live, then
-          AI-verified before publishing.
+          {SOURCE_COUNTS.company} employers · {SOURCE_COUNTS.api} remote feeds — robots.txt-checked,
+          scraped live, then AI-verified before publishing.
         </p>
       </div>
 
@@ -117,7 +117,11 @@ export function SyncPanel({ compact = false }: { compact?: boolean }) {
             </span>
             <span className="text-muted-foreground">{result.rejected} rejected by AI</span>
             <span className="text-muted-foreground">{reached.length} sources with openings</span>
+            {result.notified > 0 && (
+              <span className="text-muted-foreground">{result.notified} members alerted</span>
+            )}
           </div>
+
 
           {reached.length > 0 && (
             <ul className="mt-3 grid gap-1.5 sm:grid-cols-2">
