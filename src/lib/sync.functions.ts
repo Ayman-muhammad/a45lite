@@ -40,6 +40,8 @@ export const syncJobs = createServerFn({ method: "POST" })
     const { fetchRawJobs, verifyBatch, chunk } = await import("@/lib/sync.server");
     const { scrapeSources } = await import("@/lib/scrape.server");
     const { sourcesForScope } = await import("@/lib/sources");
+    const { notifyNewJobs } = await import("@/lib/notify.server");
+    type PublishedJob = { id: string; title: string; company: string };
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const scope = data.scope;
