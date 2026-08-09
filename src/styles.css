@@ -40,6 +40,8 @@
   --color-success: var(--success);
   --color-info: var(--info);
   --color-violet: var(--violet);
+  --color-warning: var(--warning);
+
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
