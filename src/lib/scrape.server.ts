@@ -1,4 +1,5 @@
 import { callGateway } from "@/lib/ai.server";
+import { canFetch, USER_AGENT } from "@/lib/robots.server";
 import type { JobSource } from "@/lib/sources";
 import type { RawJob } from "@/lib/sync.server";
 
@@ -7,13 +8,38 @@ export type SourceReport = {
   name: string;
   url: string;
   category: JobSource["category"];
-  status: "ok" | "empty" | "unreachable" | "blocked";
+  status: "ok" | "empty" | "unreachable" | "blocked" | "disallowed";
   found: number;
 };
 
 const FETCH_TIMEOUT_MS = 12_000;
 const MAX_TEXT_CHARS = 14_000;
 const MAX_JOBS_PER_SOURCE = 8;
+
+/**
+ * Careers pages are usually 90% site chrome. Narrow the HTML to the main
+ * content region first so the extraction budget is spent on real vacancies
+ * instead of the mega-menu.
+ */
+function mainContent(html: string) {
+  const stripped = html
+    .replace(/<nav[\s\S]*?<\/nav>/gi, " ")
+    .replace(/<header[\s\S]*?<\/header>/gi, " ")
+    .replace(/<footer[\s\S]*?<\/footer>/gi, " ")
+    .replace(/<aside[\s\S]*?<\/aside>/gi, " ")
+    .replace(/<form[\s\S]*?<\/form>/gi, " ");
+
+  const candidates = [
+    /<main[^>]*>([\s\S]*?)<\/main>/i,
+    /<article[^>]*>([\s\S]*?)<\/article>/i,
+    /<div[^>]+(?:id|class)=["'][^"']*(?:content|entry|post|vacanc|career|job)[^"']*["'][^>]*>([\s\S]*?)<\/div>/i,
+  ];
+  for (const re of candidates) {
+    const match = stripped.match(re);
+    if (match && match[1] && match[1].length > 600) return match[1];
+  }
+  return stripped;
+}
 
 function htmlToText(html: string) {
   return html
@@ -26,6 +52,7 @@ function htmlToText(html: string) {
     .replace(/&nbsp;/g, " ")
     .replace(/&amp;/g, "&")
     .replace(/&#0?39;/g, "'")
+    .replace(/&#8217;/g, "'")
     .replace(/&quot;/g, '"')
     .replace(/[ \t]+/g, " ")
     .replace(/\n{3,}/g, "\n\n")
@@ -49,7 +76,13 @@ function extractLinks(html: string, base: string): string[] {
   return Array.from(new Set(links));
 }
 
-async function fetchPage(url: string): Promise<{ html: string; status: number } | null> {
+type Page = { html: string; status: number };
+
+async function fetchPage(url: string): Promise<Page | "disallowed" | null> {
+  // Robots + crawl-delay check before EVERY outbound request.
+  const decision = await canFetch(url);
+  if (!decision.allowed) return "disallowed";
+
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   try {
@@ -57,8 +90,7 @@ async function fetchPage(url: string): Promise<{ html: string; status: number } 
       redirect: "follow",
       signal: controller.signal,
       headers: {
-        "User-Agent":
-          "Mozilla/5.0 (compatible; 45LITE-JobSync/1.0; +https://a45lite.lovable.app)",
+        "User-Agent": USER_AGENT,
         Accept: "text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8",
         "Accept-Language": "en-GB,en;q=0.9",
       },
@@ -71,6 +103,7 @@ async function fetchPage(url: string): Promise<{ html: string; status: number } 
     clearTimeout(timer);
   }
 }
+
 
 const EXTRACT_SYSTEM = `You extract job vacancies from the raw text of an official careers page.
 Return ONLY a JSON array (no markdown) of the vacancies that are clearly advertised on this page.
