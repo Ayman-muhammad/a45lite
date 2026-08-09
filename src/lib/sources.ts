@@ -22,6 +22,9 @@ export type JobSource = {
 /** Kenyan universities — MKU first, then public and private institutions. */
 export const UNIVERSITY_SOURCES: JobSource[] = [
   { id: "mku", name: "Mount Kenya University (MKU)", url: "https://www.mku.ac.ke/career-opportunity/", category: "university", location: "Thika, Kenya", companyType: "university" },
+  { id: "mku-portal", name: "MKU Careers Portal", url: "http://careers.mku.ac.ke/", category: "university", location: "Thika, Kenya", companyType: "university" },
+  { id: "mku-news", name: "MKU Careers Notices", url: "https://www.mku.ac.ke/category/mku-careers/", category: "university", location: "Thika, Kenya", companyType: "university" },
+
   { id: "uon", name: "University of Nairobi", url: "https://www.uonbi.ac.ke", category: "university", location: "Nairobi, Kenya", companyType: "university" },
   { id: "ku", name: "Kenyatta University", url: "https://www.ku.ac.ke", category: "university", location: "Nairobi, Kenya", companyType: "university" },
   { id: "jkuat", name: "JKUAT", url: "https://www.jkuat.ac.ke/careers/", category: "university", location: "Juja, Kenya", companyType: "university" },
