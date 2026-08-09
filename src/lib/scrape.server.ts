@@ -147,28 +147,34 @@ const CAREER_LINK = /career|vacanc|job|opportunit|recruit|employment|hiring/i;
  * Careers pages get moved and renamed constantly. When the configured URL is
  * dead, fall back to the site root and follow the first careers-looking link.
  */
-async function resolvePage(source: JobSource) {
+async function resolvePage(
+  source: JobSource,
+): Promise<{ page: Page | null; url: string; disallowed: boolean }> {
   const direct = await fetchPage(source.url);
-  if (direct && direct.status < 400) return { page: direct, url: source.url };
+  if (direct === "disallowed") return { page: null, url: source.url, disallowed: true };
+  if (direct && direct.status < 400) return { page: direct, url: source.url, disallowed: false };
 
   let origin: string;
   try {
     origin = new URL(source.url).origin;
   } catch {
-    return { page: direct, url: source.url };
+    return { page: direct, url: source.url, disallowed: false };
   }
 
   const home = await fetchPage(origin);
-  if (!home || home.status >= 400) return { page: direct, url: source.url };
+  if (home === "disallowed") return { page: null, url: origin, disallowed: true };
+  if (!home || home.status >= 400) return { page: direct, url: source.url, disallowed: false };
 
   const candidate = extractLinks(home.html, origin).find(
     (l) => CAREER_LINK.test(l) && l.startsWith(origin),
   );
-  if (!candidate) return { page: home, url: origin };
+  if (!candidate) return { page: home, url: origin, disallowed: false };
 
   const followed = await fetchPage(candidate);
-  if (followed && followed.status < 400) return { page: followed, url: candidate };
-  return { page: home, url: origin };
+  if (followed && followed !== "disallowed" && followed.status < 400) {
+    return { page: followed, url: candidate, disallowed: false };
+  }
+  return { page: home, url: origin, disallowed: false };
 }
 
 /** Scrapes one official careers page and returns normalised raw jobs. */
@@ -184,7 +190,8 @@ export async function scrapeSource(
     found: 0,
   };
 
-  const { page, url: pageUrl } = await resolvePage(source);
+  const { page, url: pageUrl, disallowed } = await resolvePage(source);
+  if (disallowed) return { jobs: [], report: { ...base, status: "disallowed" } };
   if (!page) return { jobs: [], report: { ...base, status: "unreachable" } };
   if (page.status === 403 || page.status === 401 || page.status === 429) {
     return { jobs: [], report: { ...base, status: "blocked" } };
@@ -192,10 +199,11 @@ export async function scrapeSource(
   if (page.status >= 400) return { jobs: [], report: { ...base, status: "unreachable" } };
   base.url = pageUrl;
 
-  const text = htmlToText(page.html).slice(0, MAX_TEXT_CHARS);
+  const text = htmlToText(mainContent(page.html)).slice(0, MAX_TEXT_CHARS);
   if (text.length < 400) return { jobs: [], report: { ...base, status: "empty" } };
 
   const links = extractLinks(page.html, pageUrl).slice(0, 60);
+
   const prompt = [
 
     `Employer: ${source.name}`,
