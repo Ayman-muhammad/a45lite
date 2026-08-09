@@ -9,6 +9,7 @@ export type SyncResult =
       found: number;
       verified: number;
       rejected: number;
+      notified: number;
       sources: SyncSourceReport[];
     }
   | {
@@ -16,8 +17,10 @@ export type SyncResult =
       found: number;
       verified: number;
       rejected: number;
+      notified: number;
       sources: SyncSourceReport[];
     };
+
 
 export type SyncSourceReport = {
   id: string;
