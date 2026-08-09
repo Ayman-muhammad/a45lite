@@ -76,6 +76,7 @@ export const syncJobs = createServerFn({ method: "POST" })
         found: 0,
         verified: 0,
         rejected: 0,
+        notified: 0,
         sources,
       };
     }
@@ -87,13 +88,14 @@ export const syncJobs = createServerFn({ method: "POST" })
     );
     raw = raw.filter((j) => !known.has(`${j.title.toLowerCase()}|${j.company.toLowerCase()}`));
     if (raw.length === 0) {
-      return { ok: true, found: 0, verified: 0, rejected: 0, sources };
+      return { ok: true, found: 0, verified: 0, rejected: 0, notified: 0, sources };
     }
 
     raw = raw.slice(0, 60);
     const now = new Date().toISOString();
     let verified = 0;
     let rejected = 0;
+    const published: PublishedJob[] = [];
 
     for (const batch of chunk(raw, 8)) {
       let verdicts;
@@ -102,7 +104,15 @@ export const syncJobs = createServerFn({ method: "POST" })
       } catch (error) {
         const code = error instanceof Error ? error.message : "AI_UNAVAILABLE";
         if (verified === 0 && rejected === 0) {
-          return { ok: false, error: code, found: raw.length, verified, rejected, sources };
+          return {
+            ok: false,
+            error: code,
+            found: raw.length,
+            verified,
+            rejected,
+            notified: 0,
+            sources,
+          };
         }
         break;
       }
@@ -135,14 +145,26 @@ export const syncJobs = createServerFn({ method: "POST" })
         };
       });
 
-      const { error } = await supabaseAdmin.from("jobs").insert(rows);
+      const { data: inserted, error } = await supabaseAdmin
+        .from("jobs")
+        .insert(rows)
+        .select("id, title, company, is_active");
       if (error) {
         // A duplicate in the batch aborts the whole insert — retry row by row.
         for (const row of rows) {
-          await supabaseAdmin.from("jobs").insert(row);
+          const { data: one } = await supabaseAdmin
+            .from("jobs")
+            .insert(row)
+            .select("id, title, company, is_active");
+          if (one?.[0]?.is_active) published.push(one[0]);
         }
+      } else {
+        for (const row of inserted ?? []) if (row.is_active) published.push(row);
       }
     }
 
-    return { ok: true, found: raw.length, verified, rejected, sources };
+    const { notified } = await notifyNewJobs(supabaseAdmin, published);
+
+    return { ok: true, found: raw.length, verified, rejected, notified, sources };
+
   });
