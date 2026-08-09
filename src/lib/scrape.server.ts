@@ -1,4 +1,5 @@
 import { callGateway } from "@/lib/ai.server";
+import { canFetch, USER_AGENT } from "@/lib/robots.server";
 import type { JobSource } from "@/lib/sources";
 import type { RawJob } from "@/lib/sync.server";
 
@@ -7,13 +8,38 @@ export type SourceReport = {
   name: string;
   url: string;
   category: JobSource["category"];
-  status: "ok" | "empty" | "unreachable" | "blocked";
+  status: "ok" | "empty" | "unreachable" | "blocked" | "disallowed";
   found: number;
 };
 
 const FETCH_TIMEOUT_MS = 12_000;
 const MAX_TEXT_CHARS = 14_000;
 const MAX_JOBS_PER_SOURCE = 8;
+
+/**
+ * Careers pages are usually 90% site chrome. Narrow the HTML to the main
+ * content region first so the extraction budget is spent on real vacancies
+ * instead of the mega-menu.
+ */
+function mainContent(html: string) {
+  const stripped = html
+    .replace(/<nav[\s\S]*?<\/nav>/gi, " ")
+    .replace(/<header[\s\S]*?<\/header>/gi, " ")
+    .replace(/<footer[\s\S]*?<\/footer>/gi, " ")
+    .replace(/<aside[\s\S]*?<\/aside>/gi, " ")
+    .replace(/<form[\s\S]*?<\/form>/gi, " ");
+
+  const candidates = [
+    /<main[^>]*>([\s\S]*?)<\/main>/i,
+    /<article[^>]*>([\s\S]*?)<\/article>/i,
+    /<div[^>]+(?:id|class)=["'][^"']*(?:content|entry|post|vacanc|career|job)[^"']*["'][^>]*>([\s\S]*?)<\/div>/i,
+  ];
+  for (const re of candidates) {
+    const match = stripped.match(re);
+    if (match && match[1] && match[1].length > 600) return match[1];
+  }
+  return stripped;
+}
 
 function htmlToText(html: string) {
   return html
@@ -26,6 +52,7 @@ function htmlToText(html: string) {
     .replace(/&nbsp;/g, " ")
     .replace(/&amp;/g, "&")
     .replace(/&#0?39;/g, "'")
+    .replace(/&#8217;/g, "'")
     .replace(/&quot;/g, '"')
     .replace(/[ \t]+/g, " ")
     .replace(/\n{3,}/g, "\n\n")
@@ -49,7 +76,13 @@ function extractLinks(html: string, base: string): string[] {
   return Array.from(new Set(links));
 }
 
-async function fetchPage(url: string): Promise<{ html: string; status: number } | null> {
+type Page = { html: string; status: number };
+
+async function fetchPage(url: string): Promise<Page | "disallowed" | null> {
+  // Robots + crawl-delay check before EVERY outbound request.
+  const decision = await canFetch(url);
+  if (!decision.allowed) return "disallowed";
+
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   try {
@@ -57,8 +90,7 @@ async function fetchPage(url: string): Promise<{ html: string; status: number } 
       redirect: "follow",
       signal: controller.signal,
       headers: {
-        "User-Agent":
-          "Mozilla/5.0 (compatible; 45LITE-JobSync/1.0; +https://a45lite.lovable.app)",
+        "User-Agent": USER_AGENT,
         Accept: "text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8",
         "Accept-Language": "en-GB,en;q=0.9",
       },
@@ -71,6 +103,7 @@ async function fetchPage(url: string): Promise<{ html: string; status: number } 
     clearTimeout(timer);
   }
 }
+
 
 const EXTRACT_SYSTEM = `You extract job vacancies from the raw text of an official careers page.
 Return ONLY a JSON array (no markdown) of the vacancies that are clearly advertised on this page.
@@ -114,28 +147,34 @@ const CAREER_LINK = /career|vacanc|job|opportunit|recruit|employment|hiring/i;
  * Careers pages get moved and renamed constantly. When the configured URL is
  * dead, fall back to the site root and follow the first careers-looking link.
  */
-async function resolvePage(source: JobSource) {
+async function resolvePage(
+  source: JobSource,
+): Promise<{ page: Page | null; url: string; disallowed: boolean }> {
   const direct = await fetchPage(source.url);
-  if (direct && direct.status < 400) return { page: direct, url: source.url };
+  if (direct === "disallowed") return { page: null, url: source.url, disallowed: true };
+  if (direct && direct.status < 400) return { page: direct, url: source.url, disallowed: false };
 
   let origin: string;
   try {
     origin = new URL(source.url).origin;
   } catch {
-    return { page: direct, url: source.url };
+    return { page: direct, url: source.url, disallowed: false };
   }
 
   const home = await fetchPage(origin);
-  if (!home || home.status >= 400) return { page: direct, url: source.url };
+  if (home === "disallowed") return { page: null, url: origin, disallowed: true };
+  if (!home || home.status >= 400) return { page: direct, url: source.url, disallowed: false };
 
   const candidate = extractLinks(home.html, origin).find(
     (l) => CAREER_LINK.test(l) && l.startsWith(origin),
   );
-  if (!candidate) return { page: home, url: origin };
+  if (!candidate) return { page: home, url: origin, disallowed: false };
 
   const followed = await fetchPage(candidate);
-  if (followed && followed.status < 400) return { page: followed, url: candidate };
-  return { page: home, url: origin };
+  if (followed && followed !== "disallowed" && followed.status < 400) {
+    return { page: followed, url: candidate, disallowed: false };
+  }
+  return { page: home, url: origin, disallowed: false };
 }
 
 /** Scrapes one official careers page and returns normalised raw jobs. */
@@ -151,7 +190,8 @@ export async function scrapeSource(
     found: 0,
   };
 
-  const { page, url: pageUrl } = await resolvePage(source);
+  const { page, url: pageUrl, disallowed } = await resolvePage(source);
+  if (disallowed) return { jobs: [], report: { ...base, status: "disallowed" } };
   if (!page) return { jobs: [], report: { ...base, status: "unreachable" } };
   if (page.status === 403 || page.status === 401 || page.status === 429) {
     return { jobs: [], report: { ...base, status: "blocked" } };
@@ -159,10 +199,11 @@ export async function scrapeSource(
   if (page.status >= 400) return { jobs: [], report: { ...base, status: "unreachable" } };
   base.url = pageUrl;
 
-  const text = htmlToText(page.html).slice(0, MAX_TEXT_CHARS);
+  const text = htmlToText(mainContent(page.html)).slice(0, MAX_TEXT_CHARS);
   if (text.length < 400) return { jobs: [], report: { ...base, status: "empty" } };
 
   const links = extractLinks(page.html, pageUrl).slice(0, 60);
+
   const prompt = [
 
     `Employer: ${source.name}`,

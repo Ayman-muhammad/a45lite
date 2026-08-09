@@ -10,6 +10,7 @@ const STATUS_TONE: Record<string, string> = {
   ok: "border-success/40 bg-success/12 text-success",
   empty: "border-border bg-muted/20 text-muted-foreground",
   blocked: "border-violet/40 bg-violet/12 text-violet",
+  disallowed: "border-warning/40 bg-warning/12 text-warning",
   unreachable: "border-destructive/40 bg-destructive/12 text-destructive",
 };
 
@@ -17,8 +18,10 @@ const STATUS_LABEL: Record<string, string> = {
   ok: "listings found",
   empty: "no open roles",
   blocked: "blocked bot access",
+  disallowed: "robots.txt opt-out",
   unreachable: "unreachable",
 };
+
 
 export function SyncPanel({ compact = false }: { compact?: boolean }) {
   const runSync = useServerFn(syncJobs);
@@ -95,8 +98,8 @@ export function SyncPanel({ compact = false }: { compact?: boolean }) {
         </button>
         <p className="text-xs text-muted-foreground">
           {SOURCE_COUNTS.university} universities · {SOURCE_COUNTS.ngo} Turkana NGOs ·{" "}
-          {SOURCE_COUNTS.company} employers · {SOURCE_COUNTS.api} remote feeds — scraped live, then
-          AI-verified before publishing.
+          {SOURCE_COUNTS.company} employers · {SOURCE_COUNTS.api} remote feeds — robots.txt-checked,
+          scraped live, then AI-verified before publishing.
         </p>
       </div>
 
@@ -114,7 +117,11 @@ export function SyncPanel({ compact = false }: { compact?: boolean }) {
             </span>
             <span className="text-muted-foreground">{result.rejected} rejected by AI</span>
             <span className="text-muted-foreground">{reached.length} sources with openings</span>
+            {result.notified > 0 && (
+              <span className="text-muted-foreground">{result.notified} members alerted</span>
+            )}
           </div>
+
 
           {reached.length > 0 && (
             <ul className="mt-3 grid gap-1.5 sm:grid-cols-2">
