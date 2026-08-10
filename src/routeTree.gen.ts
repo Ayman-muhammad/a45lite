@@ -13,6 +13,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ChartboardRouteImport } from './routes/chartboard'
+import { Route as PlanRouteImport } from './routes/plan'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as AuthenticatedApplicationsRouteImport } from './routes/_authenticated/applications'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
@@ -37,6 +39,16 @@ const AdminRoute = AdminRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChartboardRoute = ChartboardRouteImport.update({
+  id: '/chartboard',
+  path: '/chartboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlanRoute = PlanRouteImport.update({
+  id: '/plan',
+  path: '/plan',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SearchRoute = SearchRouteImport.update({
@@ -75,6 +87,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/chartboard': typeof ChartboardRoute
+  '/plan': typeof PlanRoute
   '/search': typeof SearchRoute
   '/applications': typeof AuthenticatedApplicationsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
@@ -86,6 +100,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/chartboard': typeof ChartboardRoute
+  '/plan': typeof PlanRoute
   '/search': typeof SearchRoute
   '/applications': typeof AuthenticatedApplicationsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
@@ -99,6 +115,8 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/chartboard': typeof ChartboardRoute
+  '/plan': typeof PlanRoute
   '/search': typeof SearchRoute
   '/_authenticated/applications': typeof AuthenticatedApplicationsRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
@@ -112,6 +130,8 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
+    | '/chartboard'
+    | '/plan'
     | '/search'
     | '/applications'
     | '/onboarding'
@@ -123,6 +143,8 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
+    | '/chartboard'
+    | '/plan'
     | '/search'
     | '/applications'
     | '/onboarding'
@@ -135,6 +157,8 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/admin'
     | '/auth'
+    | '/chartboard'
+    | '/plan'
     | '/search'
     | '/_authenticated/applications'
     | '/_authenticated/onboarding'
@@ -148,6 +172,8 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
+  ChartboardRoute: typeof ChartboardRoute
+  PlanRoute: typeof PlanRoute
   SearchRoute: typeof SearchRoute
   JobIdRoute: typeof JobIdRoute
 }
@@ -180,6 +206,20 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chartboard': {
+      id: '/chartboard'
+      path: '/chartboard'
+      fullPath: '/chartboard'
+      preLoaderRoute: typeof ChartboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plan': {
+      id: '/plan'
+      path: '/plan'
+      fullPath: '/plan'
+      preLoaderRoute: typeof PlanRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/search': {
@@ -249,19 +289,11 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
+  ChartboardRoute: ChartboardRoute,
+  PlanRoute: PlanRoute,
   SearchRoute: SearchRoute,
   JobIdRoute: JobIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
