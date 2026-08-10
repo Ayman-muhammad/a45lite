@@ -37,6 +37,13 @@ function ChartboardPage() {
     label: `Year ${i + 1}`,
     ...draft.financial.projections[k],
   }));
+  // Illustrative shape until the plan has real numbers, so charts are never blank.
+  const hasPlanNumbers = planSeries.some((y) => y.revenue || y.expenses || y.profit);
+  const demoSeries: FinancialPoint[] = [
+    { label: "Year 1", revenue: 250000, expenses: 210000, profit: 40000 },
+    { label: "Year 2", revenue: 780000, expenses: 540000, profit: 240000 },
+    { label: "Year 3", revenue: 1900000, expenses: 1150000, profit: 750000 },
+  ];
 
   return (
     <AppShell>
@@ -54,7 +61,7 @@ function ChartboardPage() {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_360px]">
         <ChartboardCanvas
-          financial={series ?? planSeries}
+          financial={series ?? (hasPlanNumbers ? planSeries : demoSeries)}
           tam={draft.market.tam}
           competitors={draft.market.competitors}
           ltvCac={draft.financial.unitEconomics.ltvCacRatio}
