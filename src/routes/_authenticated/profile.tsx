@@ -12,12 +12,12 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({
     meta: [
-      { title: "Your profile — 45LITE" },
+      { title: "Your profile — Ayglobe Lite" },
       {
         name: "description",
-        content: "Manage your preferences, CV, notifications, privacy and career analytics on 45LITE.",
+        content: "Manage your preferences, CV, notifications, privacy and career analytics on Ayglobe Lite.",
       },
-      { property: "og:title", content: "Your profile — 45LITE" },
+      { property: "og:title", content: "Your profile — Ayglobe Lite" },
       { property: "og:description", content: "Preferences, resume, notifications and privacy controls." },
     ],
   }),
@@ -147,7 +147,7 @@ function ProfilePage() {
           </p>
           <button
             type="button"
-            onClick={() => toast("Pro billing is coming soon to 45LITE.")}
+            onClick={() => toast("Pro billing is coming soon to Ayglobe Lite.")}
             className="mt-3 min-h-11 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground"
           >
             Upgrade to Pro

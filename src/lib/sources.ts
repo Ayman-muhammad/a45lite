@@ -1,5 +1,5 @@
 /**
- * 45LITE live source registry.
+ * Ayglobe Lite live source registry.
  *
  * Every entry is an official careers / vacancies page that the sync engine
  * fetches and parses on each request. Categories drive both the scrape scope

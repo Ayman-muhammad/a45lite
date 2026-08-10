@@ -41,13 +41,13 @@ export const Route = createFileRoute("/search")({
   }),
   head: () => ({
     meta: [
-      { title: "Search verified jobs — 45LITE" },
+      { title: "Search verified jobs — Ayglobe Lite" },
       {
         name: "description",
         content:
           "Search verified Kenyan and remote jobs by keyword, location, job type, company type and experience level.",
       },
-      { property: "og:title", content: "Search verified jobs — 45LITE" },
+      { property: "og:title", content: "Search verified jobs — Ayglobe Lite" },
       { property: "og:description", content: "Filter verified jobs across Kenya and remote roles." },
     ],
   }),
@@ -58,7 +58,7 @@ function RecentSearches({ onPick }: { onPick: (q: string) => void }) {
   const [items, setItems] = useState<string[]>([]);
   useEffect(() => {
     try {
-      setItems(JSON.parse(localStorage.getItem("45lite:recent") ?? "[]"));
+      setItems(JSON.parse(localStorage.getItem("ayglobe:recent") ?? "[]"));
     } catch {
       setItems([]);
     }
@@ -83,9 +83,9 @@ function RecentSearches({ onPick }: { onPick: (q: string) => void }) {
 function pushRecent(term: string) {
   if (!term.trim()) return;
   try {
-    const prev: string[] = JSON.parse(localStorage.getItem("45lite:recent") ?? "[]");
+    const prev: string[] = JSON.parse(localStorage.getItem("ayglobe:recent") ?? "[]");
     const next = [term, ...prev.filter((p) => p !== term)].slice(0, 10);
-    localStorage.setItem("45lite:recent", JSON.stringify(next));
+    localStorage.setItem("ayglobe:recent", JSON.stringify(next));
   } catch {
     /* ignore */
   }

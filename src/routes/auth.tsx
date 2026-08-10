@@ -9,12 +9,12 @@ import { useSession } from "@/hooks/useSession";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — 45LITE" },
+      { title: "Sign in — Ayglobe Lite" },
       {
         name: "description",
-        content: "Sign in or create your free 45LITE account to save verified jobs and optimize your CV.",
+        content: "Sign in or create your free Ayglobe Lite account to save verified jobs and optimize your CV.",
       },
-      { property: "og:title", content: "Sign in — 45LITE" },
+      { property: "og:title", content: "Sign in — Ayglobe Lite" },
       { property: "og:description", content: "Access verified Kenyan job listings and AI career tools." },
     ],
   }),
@@ -88,7 +88,7 @@ function AuthPage() {
         </div>
         <div className="animate-rise mt-8 rounded-3xl border border-border bg-card p-6 md:p-8">
           <h1 className="text-xl font-bold text-foreground">
-            {mode === "signin" ? "Sign in to 45LITE" : "Create your account"}
+            {mode === "signin" ? "Sign in to Ayglobe Lite" : "Create your account"}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Verified jobs for Kenyan professionals and academics.

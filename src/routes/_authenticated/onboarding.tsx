@@ -10,9 +10,9 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({
     meta: [
-      { title: "Set up your profile — 45LITE" },
-      { name: "description", content: "Tell 45LITE what roles you want so your feed matches your career." },
-      { property: "og:title", content: "Set up your profile — 45LITE" },
+      { title: "Set up your profile — Ayglobe Lite" },
+      { name: "description", content: "Tell Ayglobe Lite what roles you want so your feed matches your career." },
+      { property: "og:title", content: "Set up your profile — Ayglobe Lite" },
       { property: "og:description", content: "Personalize your verified job feed in under a minute." },
     ],
   }),

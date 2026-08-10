@@ -30,7 +30,7 @@ export const reviewJob = createServerFn({ method: "POST" })
       .from("jobs")
       .update({
         verification_status: data.decision,
-        verified_by: "45LITE Admin",
+        verified_by: "Ayglobe Lite Admin",
         verified_at: new Date().toISOString(),
       })
       .eq("id", data.jobId);

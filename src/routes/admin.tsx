@@ -9,10 +9,10 @@ import type { Job } from "@/lib/jobs";
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Verification console — 45LITE" },
-      { name: "description", content: "Internal 45LITE console for approving or rejecting submitted jobs." },
+      { title: "Verification console — Ayglobe Lite" },
+      { name: "description", content: "Internal Ayglobe Lite console for approving or rejecting submitted jobs." },
       { name: "robots", content: "noindex" },
-      { property: "og:title", content: "Verification console — 45LITE" },
+      { property: "og:title", content: "Verification console — Ayglobe Lite" },
       { property: "og:description", content: "Internal job verification console." },
     ],
   }),

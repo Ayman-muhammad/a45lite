@@ -105,7 +105,7 @@ export async function fetchRawJobs(): Promise<RawJob[]> {
   });
 }
 
-const VERIFY_SYSTEM = `You are 45LITE's autonomous job verification engine for the Kenyan and remote-Africa market.
+const VERIFY_SYSTEM = `You are Ayglobe Lite's autonomous job verification engine for the Kenyan and remote-Africa market.
 For EACH job you receive, decide if it is a legitimate, currently open, professionally posted role that a Kenyan
 professional, academic or student could realistically apply to (remote-friendly roles count).
 

@@ -112,7 +112,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-40 border-b border-border/80 bg-background/85 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-8">
-          <Link to="/" aria-label="45LITE home">
+          <Link to="/" aria-label="Ayglobe Lite home">
             <Logo />
           </Link>
           <div className="flex items-center gap-2">
@@ -170,7 +170,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <footer className="hidden border-t border-border/70 py-6 md:block">
         <div className="text-data mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 text-xs text-muted-foreground md:px-8">
-          <span className="text-primary-light">45LITE · Career. Optimized.</span>
+          <span className="text-primary-light">Ayglobe Lite · Career. Optimized.</span>
           <span className="flex gap-4">
             <Link to="/profile" className="hover:text-primary">
               Privacy
@@ -178,7 +178,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <Link to="/profile" className="hover:text-primary">
               Terms
             </Link>
-            <a href="mailto:support@45lite.app" className="hover:text-primary">
+            <a href="mailto:support@ayglobe.app" className="hover:text-primary">
               Contact Support
             </a>
           </span>

@@ -9,12 +9,12 @@ import { APPLICATION_STATUSES, deadlineLabel, type Job } from "@/lib/jobs";
 export const Route = createFileRoute("/_authenticated/applications")({
   head: () => ({
     meta: [
-      { title: "Application tracker — 45LITE" },
+      { title: "Application tracker — Ayglobe Lite" },
       {
         name: "description",
         content: "Track every application from saved to offer on a single Kenyan job pipeline board.",
       },
-      { property: "og:title", content: "Application tracker — 45LITE" },
+      { property: "og:title", content: "Application tracker — Ayglobe Lite" },
       { property: "og:description", content: "Your job pipeline: saved, applied, interview, offer." },
     ],
   }),
