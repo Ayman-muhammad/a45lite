@@ -1,6 +1,17 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Bell, Home, Search, Heart, User, KanbanSquare, LogOut, WifiOff } from "lucide-react";
+import {
+  Bell,
+  Home,
+  Search,
+  Heart,
+  User,
+  KanbanSquare,
+  LogOut,
+  WifiOff,
+  FileText,
+  BarChart3,
+} from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { Logo } from "@/components/Logo";
 import { useSession } from "@/hooks/useSession";
@@ -10,6 +21,8 @@ import { cn } from "@/lib/utils";
 const NAV = [
   { to: "/", label: "Home", icon: Home },
   { to: "/search", label: "Search", icon: Search },
+  { to: "/plan", label: "Plan", icon: FileText },
+  { to: "/chartboard", label: "Charts", icon: BarChart3 },
   { to: "/saved", label: "Saved", icon: Heart },
   { to: "/applications", label: "Tracker", icon: KanbanSquare },
   { to: "/profile", label: "Profile", icon: User },
@@ -170,7 +183,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <footer className="hidden border-t border-border/70 py-6 md:block">
         <div className="text-data mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 text-xs text-muted-foreground md:px-8">
-          <span className="text-primary-light">Ayglobe Lite · Career. Optimized.</span>
+          <span className="text-primary-light">Ayglobe Lite · Executive planning, validated.</span>
           <span className="flex gap-4">
             <Link to="/profile" className="hover:text-primary">
               Privacy
