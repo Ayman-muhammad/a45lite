@@ -65,14 +65,15 @@
 
 :root {
   --radius: 1rem;
-  /* deep space slate #0B0F19 */
-  --background: oklch(0.17 0.021 265);
-  --foreground: oklch(0.99 0 0);
-  /* slate-800 #1E293B */
-  --card: oklch(0.279 0.041 260.031);
-  --card-foreground: oklch(0.99 0 0);
-  --popover: oklch(0.24 0.035 262);
-  --popover-foreground: oklch(0.99 0 0);
+  /* stone-950 #0C0A09 — warm neutral base that pairs with orange */
+  --background: oklch(0.15 0.005 60);
+  --foreground: oklch(0.99 0.002 90);
+  /* stone-900 #1C1917 */
+  --card: oklch(0.216 0.006 56.043);
+  --card-foreground: oklch(0.99 0.002 90);
+  /* stone-800 #292524 */
+  --popover: oklch(0.268 0.007 34.298);
+  --popover-foreground: oklch(0.99 0.002 90);
   /* orange-500 #F97316 */
   --primary: oklch(0.7 0.188 41.5);
   --primary-foreground: oklch(1 0 0);
@@ -82,22 +83,25 @@
   --primary-glow: oklch(0.83 0.113 55);
   /* orange-600 #EA580C */
   --primary-dark: oklch(0.635 0.196 40);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.99 0 0);
-  --muted: oklch(0.26 0.035 261);
-  /* slate-400 #94A3B8 */
-  --muted-foreground: oklch(0.71 0.035 256.8);
-  --accent: oklch(0.32 0.04 260);
-  --accent-foreground: oklch(0.99 0 0);
+  /* navy accents for executive contrast */
+  --navy: oklch(0.28 0.04 264);
+  --navy-deep: oklch(0.21 0.04 265);
+  --secondary: oklch(0.216 0.006 56.043);
+  --secondary-foreground: oklch(0.99 0.002 90);
+  --muted: oklch(0.245 0.006 56);
+  /* stone-400 #A8A29E */
+  --muted-foreground: oklch(0.709 0.01 56.259);
+  --accent: oklch(0.3 0.008 56);
+  --accent-foreground: oklch(0.99 0.002 90);
   --destructive: oklch(0.63 0.22 25);
   --destructive-foreground: oklch(0.99 0 0);
-  --success: oklch(0.72 0.17 155);
-  --info: oklch(0.68 0.15 245);
+  --success: oklch(0.72 0.17 162);
+  --info: oklch(0.68 0.15 253);
   --violet: oklch(0.68 0.17 300);
   --warning: oklch(0.79 0.16 82);
 
-  --border: oklch(0.33 0.035 260);
-  --input: oklch(0.33 0.035 260);
+  --border: oklch(0.31 0.008 56);
+  --input: oklch(0.31 0.008 56);
   --ring: oklch(0.7 0.188 41.5);
   --sidebar: oklch(0.2 0.026 264);
   --sidebar-foreground: oklch(0.99 0 0);
