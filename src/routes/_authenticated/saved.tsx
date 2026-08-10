@@ -9,10 +9,10 @@ import { daysUntil, type Job } from "@/lib/jobs";
 export const Route = createFileRoute("/_authenticated/saved")({
   head: () => ({
     meta: [
-      { title: "Saved jobs — 45LITE" },
+      { title: "Saved jobs — Ayglobe Lite" },
       { name: "description", content: "Your saved verified jobs, sorted by closest deadline." },
-      { property: "og:title", content: "Saved jobs — 45LITE" },
-      { property: "og:description", content: "Track the verified jobs you saved on 45LITE." },
+      { property: "og:title", content: "Saved jobs — Ayglobe Lite" },
+      { property: "og:description", content: "Track the verified jobs you saved on Ayglobe Lite." },
     ],
   }),
   component: SavedPage,

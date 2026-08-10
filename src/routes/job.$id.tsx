@@ -22,14 +22,14 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/job/$id")({
   head: () => ({
     meta: [
-      { title: "Job detail — 45LITE" },
+      { title: "Job detail — Ayglobe Lite" },
       {
         name: "description",
         content:
           "Full verified job details, how to apply, and on-demand AI match analysis, CV optimization and cover letter generation.",
       },
-      { property: "og:title", content: "Job detail — 45LITE" },
-      { property: "og:description", content: "Verified job details and AI career tools on 45LITE." },
+      { property: "og:title", content: "Job detail — Ayglobe Lite" },
+      { property: "og:description", content: "Verified job details and AI career tools on Ayglobe Lite." },
     ],
   }),
   component: JobDetail,
@@ -135,12 +135,12 @@ function JobDetail() {
       doc.text(line, 48, y);
       y += 16;
     }
-    doc.save(result.type === "cv_rewrite" ? "45lite-optimized-cv.pdf" : "45lite-cover-letter.pdf");
+    doc.save(result.type === "cv_rewrite" ? "ayglobe-optimized-cv.pdf" : "ayglobe-cover-letter.pdf");
   }
 
   async function share() {
     if (!job) return;
-    const text = `Check out this ${job.title} at ${job.company} on 45LITE: ${window.location.href}`;
+    const text = `Check out this ${job.title} at ${job.company} on Ayglobe Lite: ${window.location.href}`;
     if (navigator.share) {
       await navigator.share({ title: job.title, text, url: window.location.href });
       return;
@@ -339,7 +339,7 @@ function JobDetail() {
             <h2 className="text-sm font-semibold text-foreground">{job.company}</h2>
             <p className="mt-1 text-xs text-muted-foreground">{companyTypeLabel(job.company_type)}</p>
             <p className="text-data mt-3 text-xs text-primary-light">
-              Verified by {job.verified_by ?? "45LITE"} · source {job.source ?? "official"}
+              Verified by {job.verified_by ?? "Ayglobe Lite"} · source {job.source ?? "official"}
             </p>
           </div>
           <div>

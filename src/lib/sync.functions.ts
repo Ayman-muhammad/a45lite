@@ -140,7 +140,7 @@ export const syncJobs = createServerFn({ method: "POST" })
           tags: v.tags.length ? v.tags : job.tags,
           verification_status: v.verdict,
           verification_notes: v.reason,
-          verified_by: "45LITE AI Verifier",
+          verified_by: "Ayglobe Lite AI Verifier",
           verified_at: now,
           is_active: v.verdict === "verified",
           created_at: job.posted_at ?? now,

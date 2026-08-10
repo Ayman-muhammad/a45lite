@@ -1,58 +1,47 @@
 import { cn } from "@/lib/utils";
-import markUrl from "@/assets/45lite-mark.png";
 
 /**
- * The 45L mark: an angular circuit chip carrying the 45L monogram, wrapped by a
- * live orbital scan ring.
+ * Ayglobe mark: an abstract globe formed by three intersecting arcs with a
+ * central node. Pure SVG, themed with design tokens (no hardcoded colors).
  */
-export function OrbitalMark({ className, size = 40 }: { className?: string; size?: number }) {
+export function GlobeMark({ className, size = 40 }: { className?: string; size?: number }) {
   return (
     <span
       className={cn("relative inline-flex items-center justify-center", className)}
       style={{ width: size, height: size }}
       aria-hidden="true"
     >
-      <span className="animate-orbit absolute inset-[-16%]">
-        <svg viewBox="0 0 100 100" className="h-full w-full">
-          <circle
-            cx="50"
-            cy="50"
-            r="47"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeDasharray="8 16"
-            strokeLinecap="round"
-            className="text-primary/50"
-          />
-        </svg>
-      </span>
-      <img
-        src={markUrl}
-        alt=""
-        width={1024}
-        height={1024}
-        className="relative h-full w-full scale-110 object-contain drop-shadow-[0_0_12px_color-mix(in_oklab,var(--primary)_45%,transparent)]"
-      />
+      <svg viewBox="0 0 64 64" className="h-full w-full">
+        <g fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round">
+          <circle cx="32" cy="32" r="24" className="text-primary" stroke="currentColor" />
+          <ellipse cx="32" cy="32" rx="11" ry="24" className="text-primary-light" stroke="currentColor" />
+          <path d="M9 24c7 4 15 6 23 6s16-2 23-6" className="text-primary-glow" stroke="currentColor" />
+        </g>
+        <circle cx="32" cy="32" r="6.5" className="fill-primary" />
+      </svg>
+      <span className="pointer-events-none absolute inset-0 rounded-full opacity-70 shadow-glow" />
     </span>
   );
 }
 
-
 export function Logo({ compact = false }: { compact?: boolean }) {
   return (
     <span className="flex items-center gap-3">
-      <OrbitalMark size={compact ? 32 : 40} />
+      <GlobeMark size={compact ? 30 : 38} />
       <span className="flex flex-col leading-none">
         <span className="text-lg font-extrabold tracking-tight text-foreground">
-          45<span className="text-primary">L</span>ITE
+          Ay<span className="text-primary">globe</span>
+          <span className="ml-1 text-sm font-semibold text-muted-foreground">Lite</span>
         </span>
         {!compact && (
           <span className="text-data mt-1 text-[9px] tracking-[0.28em] text-primary-light">
-            CAREER · OPTIMIZED
+            EXECUTIVE · PLANNING
           </span>
         )}
       </span>
     </span>
   );
 }
+
+/** Back-compat alias for older imports. */
+export const OrbitalMark = GlobeMark;

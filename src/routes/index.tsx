@@ -14,13 +14,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "45LITE — Verified Jobs for Kenyan Professionals" },
+      { title: "Ayglobe Lite — Verified Jobs for Kenyan Professionals" },
       {
         name: "description",
         content:
           "Discover verified lecturing, tech, TBI research, internship, attachment and remote jobs for Kenyan professionals. Career. Optimized.",
       },
-      { property: "og:title", content: "45LITE — Verified Jobs for Kenyan Professionals" },
+      { property: "og:title", content: "Ayglobe Lite — Verified Jobs for Kenyan Professionals" },
       {
         property: "og:description",
         content: "Verified job discovery and AI career optimization for Kenyan professionals.",
@@ -152,7 +152,7 @@ function Home() {
         </h1>
         <div className="mt-3 h-1 w-16 rounded-full bg-primary" />
         <p className="mt-4 max-w-2xl text-sm text-muted-foreground">
-          Every listing on 45LITE is checked against its official source before it reaches your feed —
+          Every listing on Ayglobe Lite is checked against its official source before it reaches your feed —
           university posts, Kenyan tech roles, TBI research, attachments and remote-for-Africa jobs.
         </p>
         <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">

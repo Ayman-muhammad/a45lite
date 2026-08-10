@@ -1,10 +1,10 @@
 {
-  "name": "45LITE — Verified Jobs for Kenyan Professionals",
-  "short_name": "45LITE",
-  "description": "Verified job discovery and career optimization for Kenyan professionals and academics.",
+  "name": "Ayglobe Lite — Executive Business Planning",
+  "short_name": "Ayglobe Lite",
+  "description": "Executive business planning, chartboards and validated investor-ready plan exports.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0B0F19",
+  "background_color": "#0C0A09",
   "theme_color": "#F97316",
   "icons": [
     {

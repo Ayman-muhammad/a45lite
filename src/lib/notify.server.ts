@@ -29,7 +29,7 @@ export async function notifyNewJobs(
       job_id: job.id,
       type: "new_job",
       title: `New verified job: ${job.title}`,
-      body: `${job.company} — verified by the 45LITE AI verifier and now live in your feed.`,
+      body: `${job.company} — verified by the Ayglobe Lite AI verifier and now live in your feed.`,
     })),
   );
 
@@ -75,11 +75,11 @@ async function sendDigestEmails(
         body: JSON.stringify({
           from,
           to: recipient.email,
-          subject: `${jobs.length} new verified job${jobs.length === 1 ? "" : "s"} on 45LITE`,
+          subject: `${jobs.length} new verified job${jobs.length === 1 ? "" : "s"} on Ayglobe Lite`,
           html: `<p>Hi ${escapeHtml(recipient.name ?? "there")},</p>
-<p>Your latest 45LITE sync published ${jobs.length} verified vacanc${jobs.length === 1 ? "y" : "ies"}:</p>
+<p>Your latest Ayglobe Lite sync published ${jobs.length} verified vacanc${jobs.length === 1 ? "y" : "ies"}:</p>
 <ul>${list}</ul>
-<p><a href="https://a45lite.lovable.app/">Open 45LITE</a></p>`,
+<p><a href="https://a45lite.lovable.app/">Open Ayglobe Lite</a></p>`,
         }),
       });
       if (res.ok) sent += 1;

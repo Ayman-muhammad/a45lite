@@ -8,7 +8,7 @@
 
 export const USER_AGENT_TOKEN = "45lite-jobsync";
 export const USER_AGENT =
-  "Mozilla/5.0 (compatible; 45LITE-JobSync/1.0; +https://a45lite.lovable.app)";
+  "Mozilla/5.0 (compatible; Ayglobe Lite-JobSync/1.0; +https://a45lite.lovable.app)";
 
 const ROBOTS_TIMEOUT_MS = 6_000;
 const DEFAULT_DELAY_MS = 400;
