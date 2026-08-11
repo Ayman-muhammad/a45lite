@@ -214,17 +214,18 @@ function Home() {
         <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
           Trending today
         </h2>
-        <div className="mt-3 flex gap-4 overflow-x-auto pb-2">
+        <div className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:mx-0 sm:gap-4 sm:px-0 [&::-webkit-scrollbar]:hidden">
           {trending.map((job) => (
             <JobCard
               key={job.id}
               job={job}
               saved={savedIds.includes(job.id)}
               onToggleSave={toggle}
-              className="w-[320px] shrink-0"
+              className="w-[84vw] max-w-[320px] shrink-0 snap-start sm:w-[320px]"
             />
           ))}
         </div>
+
       </section>
 
       <section className="mt-8">
