@@ -145,7 +145,7 @@ function Home() {
 
   return (
     <AppShell>
-      <section className="hero-glow animate-rise rounded-3xl border border-border bg-card/40 p-6 md:p-8">
+      <section className="hero-glow animate-rise rounded-3xl border border-border bg-card/40 p-5 sm:p-6 md:p-8">
         <p className="text-data text-xs tracking-[0.24em] text-primary-light">MISSION CONTROL</p>
         <h1 className="mt-3 text-2xl font-extrabold tracking-tight text-foreground md:text-3xl">
           {profile?.full_name ? `Karibu, ${profile.full_name.split(" ")[0]}` : "Verified jobs, zero noise"}
