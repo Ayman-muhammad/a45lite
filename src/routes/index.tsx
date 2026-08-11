@@ -82,12 +82,13 @@ function Stat({ value, label }: { value: number | string; label: string }) {
 
 function SourceCoverage() {
   return (
-    <div className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="mt-6 grid grid-cols-2 gap-2 lg:grid-cols-4">
       {[
         { label: "Kenyan universities", value: SOURCE_COUNTS.university, hint: "MKU, UoN, JKUAT, KU…" },
-        { label: "Turkana NGOs", value: SOURCE_COUNTS.ngo, hint: "TBI, DRC, NRC, IRC, LWF…" },
-        { label: "Corporate & tech", value: SOURCE_COUNTS.company, hint: "Safaricom, Microsoft, Equity…" },
+        { label: "Turkana NGOs", value: SOURCE_COUNTS.ngo, hint: "TBI, DRC, Red Cross, Amref…" },
+        { label: "Corporate & tech", value: SOURCE_COUNTS.company, hint: "Microsoft, Equity, KCB…" },
         { label: "Remote feeds", value: SOURCE_COUNTS.api, hint: "Remote-for-Africa roles" },
+
       ].map((c) => (
         <div
           key={c.label}
