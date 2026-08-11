@@ -202,26 +202,34 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       </footer>
 
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 backdrop-blur md:hidden">
-        <div className="flex">
+      <nav
+        aria-label="Primary"
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
+      >
+        <div className="grid grid-cols-7">
           {NAV.map((item) => {
             const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
             return (
               <Link
                 key={item.to}
                 to={item.to}
+                aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex min-h-14 flex-1 flex-col items-center justify-center gap-1 py-2 text-[11px] text-muted-foreground",
+                  "relative flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 px-0.5 py-2 text-[10px] font-medium text-muted-foreground transition-colors active:bg-accent/40",
                   active && "text-primary",
                 )}
               >
-                <item.icon className="h-5 w-5" aria-hidden="true" />
-                {item.label}
+                {active && (
+                  <span className="absolute inset-x-3 top-0 h-0.5 rounded-full bg-primary" />
+                )}
+                <item.icon className="h-5 w-5 shrink-0" aria-hidden="true" />
+                <span className="w-full truncate text-center leading-none">{item.label}</span>
               </Link>
             );
           })}
         </div>
       </nav>
+
     </div>
   );
 }
