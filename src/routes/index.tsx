@@ -82,12 +82,13 @@ function Stat({ value, label }: { value: number | string; label: string }) {
 
 function SourceCoverage() {
   return (
-    <div className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="mt-6 grid grid-cols-2 gap-2 lg:grid-cols-4">
       {[
         { label: "Kenyan universities", value: SOURCE_COUNTS.university, hint: "MKU, UoN, JKUAT, KU…" },
-        { label: "Turkana NGOs", value: SOURCE_COUNTS.ngo, hint: "TBI, DRC, NRC, IRC, LWF…" },
-        { label: "Corporate & tech", value: SOURCE_COUNTS.company, hint: "Safaricom, Microsoft, Equity…" },
+        { label: "Turkana NGOs", value: SOURCE_COUNTS.ngo, hint: "TBI, DRC, Red Cross, Amref…" },
+        { label: "Corporate & tech", value: SOURCE_COUNTS.company, hint: "Microsoft, Equity, KCB…" },
         { label: "Remote feeds", value: SOURCE_COUNTS.api, hint: "Remote-for-Africa roles" },
+
       ].map((c) => (
         <div
           key={c.label}
@@ -145,7 +146,7 @@ function Home() {
 
   return (
     <AppShell>
-      <section className="hero-glow animate-rise rounded-3xl border border-border bg-card/40 p-6 md:p-8">
+      <section className="hero-glow animate-rise rounded-3xl border border-border bg-card/40 p-5 sm:p-6 md:p-8">
         <p className="text-data text-xs tracking-[0.24em] text-primary-light">MISSION CONTROL</p>
         <h1 className="mt-3 text-2xl font-extrabold tracking-tight text-foreground md:text-3xl">
           {profile?.full_name ? `Karibu, ${profile.full_name.split(" ")[0]}` : "Verified jobs, zero noise"}
@@ -175,7 +176,7 @@ function Home() {
         </div>
       </section>
 
-      <div className="mt-6 flex gap-2 overflow-x-auto pb-1">
+      <div className="mt-6 -mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
         {FEED_FILTERS.map((f) => (
           <button
             key={f.key}
@@ -214,17 +215,18 @@ function Home() {
         <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
           Trending today
         </h2>
-        <div className="mt-3 flex gap-4 overflow-x-auto pb-2">
+        <div className="mt-3 -mx-4 flex snap-x gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:mx-0 sm:gap-4 sm:px-0 [&::-webkit-scrollbar]:hidden">
           {trending.map((job) => (
             <JobCard
               key={job.id}
               job={job}
               saved={savedIds.includes(job.id)}
               onToggleSave={toggle}
-              className="w-[320px] shrink-0"
+              className="w-[84vw] max-w-[320px] shrink-0 snap-start sm:w-[320px]"
             />
           ))}
         </div>
+
       </section>
 
       <section className="mt-8">

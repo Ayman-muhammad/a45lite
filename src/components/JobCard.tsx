@@ -40,11 +40,12 @@ export function JobCard({
   return (
     <article
       className={cn(
-        "card-lift animate-rise relative rounded-2xl border border-border bg-card p-5",
+        "card-lift animate-rise relative min-w-0 rounded-2xl border border-border bg-card p-4 sm:p-5",
         className,
       )}
     >
-      <div className="flex items-start gap-4">
+      <div className="flex min-w-0 items-start gap-3 sm:gap-4">
+
         <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-primary/30 bg-primary/10 text-sm font-bold text-primary-light">
           {job.company.slice(0, 2).toUpperCase()}
         </div>

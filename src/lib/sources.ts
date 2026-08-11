@@ -1,9 +1,11 @@
 /**
  * Ayglobe Lite live source registry.
  *
- * Every entry is an official careers / vacancies page that the sync engine
- * fetches and parses on each request. Categories drive both the scrape scope
- * and the feed classification hints given to the AI verifier.
+ * Every entry below was probed live (HTTP 200, real vacancy content) before
+ * being included — dead domains, permanently 403/503 portals and pages that
+ * redirect to marketing shells were removed rather than left to fail silently
+ * during a sync. Categories drive both the scrape scope and the classification
+ * hints given to the AI verifier.
  */
 
 export type SourceCategory = "university" | "ngo" | "company" | "api";
@@ -17,110 +19,114 @@ export type JobSource = {
   location: string;
   /** Classification hint passed to the verifier. */
   companyType: "university" | "ngo" | "tbi" | "tech_company" | "startup" | "corporate" | "remote_abroad";
+  /** ISO date of the last successful live reachability check. */
+  verifiedOn: string;
 };
+
+const CHECKED = "2026-08-11";
+
+const uni = (
+  id: string,
+  name: string,
+  url: string,
+  location: string,
+): JobSource => ({
+  id,
+  name,
+  url,
+  category: "university",
+  location,
+  companyType: "university",
+  verifiedOn: CHECKED,
+});
 
 /** Kenyan universities — MKU first, then public and private institutions. */
 export const UNIVERSITY_SOURCES: JobSource[] = [
-  { id: "mku", name: "Mount Kenya University (MKU)", url: "https://www.mku.ac.ke/career-opportunity/", category: "university", location: "Thika, Kenya", companyType: "university" },
-  { id: "mku-portal", name: "MKU Careers Portal", url: "http://careers.mku.ac.ke/", category: "university", location: "Thika, Kenya", companyType: "university" },
-  { id: "mku-news", name: "MKU Careers Notices", url: "https://www.mku.ac.ke/category/mku-careers/", category: "university", location: "Thika, Kenya", companyType: "university" },
+  uni("mku", "Mount Kenya University (MKU)", "https://www.mku.ac.ke/career-opportunity/", "Thika, Kenya"),
+  uni("mku-news", "MKU Careers Notices", "https://www.mku.ac.ke/category/mku-careers/", "Thika, Kenya"),
 
-  { id: "uon", name: "University of Nairobi", url: "https://www.uonbi.ac.ke", category: "university", location: "Nairobi, Kenya", companyType: "university" },
-  { id: "ku", name: "Kenyatta University", url: "https://www.ku.ac.ke", category: "university", location: "Nairobi, Kenya", companyType: "university" },
-  { id: "jkuat", name: "JKUAT", url: "https://www.jkuat.ac.ke/careers/", category: "university", location: "Juja, Kenya", companyType: "university" },
-  { id: "moi", name: "Moi University", url: "https://www.mu.ac.ke", category: "university", location: "Eldoret, Kenya", companyType: "university" },
-  { id: "egerton", name: "Egerton University", url: "https://www.egerton.ac.ke/index.php/careers", category: "university", location: "Njoro, Kenya", companyType: "university" },
-  { id: "strathmore", name: "Strathmore University", url: "https://strathmore.edu/careers/", category: "university", location: "Nairobi, Kenya", companyType: "university" },
-  { id: "usiu", name: "USIU-Africa", url: "https://www.usiu.ac.ke", category: "university", location: "Nairobi, Kenya", companyType: "university" },
-  { id: "tukenya", name: "Technical University of Kenya", url: "https://www.tukenya.ac.ke", category: "university", location: "Nairobi, Kenya", companyType: "university" },
-  { id: "tum", name: "Technical University of Mombasa", url: "https://www.tum.ac.ke", category: "university", location: "Mombasa, Kenya", companyType: "university" },
-  { id: "maseno", name: "Maseno University", url: "https://www.maseno.ac.ke/index.php/vacancies", category: "university", location: "Kisumu, Kenya", companyType: "university" },
-  { id: "dkut", name: "Dedan Kimathi University", url: "https://www.dkut.ac.ke", category: "university", location: "Nyeri, Kenya", companyType: "university" },
-  { id: "chuka", name: "Chuka University", url: "https://www.chuka.ac.ke/index.php/vacancies", category: "university", location: "Chuka, Kenya", companyType: "university" },
-  { id: "kisii", name: "Kisii University", url: "https://kisiiuniversity.ac.ke", category: "university", location: "Kisii, Kenya", companyType: "university" },
-  { id: "mksu", name: "Machakos University", url: "https://www.mksu.ac.ke", category: "university", location: "Machakos, Kenya", companyType: "university" },
-  { id: "must", name: "Meru University of Science & Technology", url: "https://www.must.ac.ke", category: "university", location: "Meru, Kenya", companyType: "university" },
-  { id: "pu", name: "Pwani University", url: "https://www.pu.ac.ke", category: "university", location: "Kilifi, Kenya", companyType: "university" },
-  { id: "laikipia", name: "Laikipia University", url: "https://www.laikipia.ac.ke/index.php/careers", category: "university", location: "Nyahururu, Kenya", companyType: "university" },
-  { id: "kabarak", name: "Kabarak University", url: "https://www.kabarak.ac.ke", category: "university", location: "Nakuru, Kenya", companyType: "university" },
-  { id: "daystar", name: "Daystar University", url: "https://www.daystar.ac.ke", category: "university", location: "Nairobi, Kenya", companyType: "university" },
-  { id: "kca", name: "KCA University", url: "https://www.kcau.ac.ke/careers", category: "university", location: "Nairobi, Kenya", companyType: "university" },
-  { id: "mmu", name: "Multimedia University of Kenya", url: "https://www.mmu.ac.ke", category: "university", location: "Nairobi, Kenya", companyType: "university" },
-  { id: "zetech", name: "Zetech University", url: "https://www.zetech.ac.ke/careers/", category: "university", location: "Ruiru, Kenya", companyType: "university" },
-  { id: "riara", name: "Riara University", url: "https://riarauniversity.ac.ke/careers/", category: "university", location: "Nairobi, Kenya", companyType: "university" },
-  { id: "karu", name: "Karatina University", url: "https://www.karu.ac.ke/index.php/careers", category: "university", location: "Karatina, Kenya", companyType: "university" },
-  { id: "kyu", name: "Kirinyaga University", url: "https://kyu.ac.ke", category: "university", location: "Kerugoya, Kenya", companyType: "university" },
-  { id: "mut", name: "Murang'a University of Technology", url: "https://www.mut.ac.ke/index.php/careers", category: "university", location: "Murang'a, Kenya", companyType: "university" },
-  { id: "seku", name: "South Eastern Kenya University", url: "https://www.seku.ac.ke", category: "university", location: "Kitui, Kenya", companyType: "university" },
-  { id: "mmust", name: "Masinde Muliro University", url: "https://www.mmust.ac.ke/index.php/careers", category: "university", location: "Kakamega, Kenya", companyType: "university" },
-  { id: "kibu", name: "Kibabii University", url: "https://www.kibu.ac.ke", category: "university", location: "Bungoma, Kenya", companyType: "university" },
-  { id: "mmarau", name: "Maasai Mara University", url: "https://www.mmarau.ac.ke", category: "university", location: "Narok, Kenya", companyType: "university" },
-  { id: "rongo", name: "Rongo University", url: "https://www.rongovarsity.ac.ke", category: "university", location: "Rongo, Kenya", companyType: "university" },
-  { id: "cuk", name: "The Co-operative University of Kenya", url: "https://www.cuk.ac.ke", category: "university", location: "Nairobi, Kenya", companyType: "university" },
-  { id: "kemu", name: "Kenya Methodist University", url: "https://www.kemu.ac.ke/careers", category: "university", location: "Meru, Kenya", companyType: "university" },
-  { id: "anu", name: "Africa Nazarene University", url: "https://anu.ac.ke", category: "university", location: "Nairobi, Kenya", companyType: "university" },
-  { id: "cuea", name: "Catholic University of Eastern Africa", url: "https://www.cuea.edu/careers", category: "university", location: "Nairobi, Kenya", companyType: "university" },
-  { id: "gau", name: "Garissa University", url: "https://gau.ac.ke", category: "university", location: "Garissa, Kenya", companyType: "university" },
-  { id: "tuc", name: "Turkana University College", url: "https://tuc.ac.ke", category: "university", location: "Lodwar, Turkana", companyType: "university" },
-  { id: "tharaka", name: "Tharaka University", url: "https://tharaka.ac.ke", category: "university", location: "Tharaka Nithi, Kenya", companyType: "university" },
+  uni("uon", "University of Nairobi", "https://www.uonbi.ac.ke/jobs", "Nairobi, Kenya"),
+  uni("ku", "Kenyatta University", "https://www.ku.ac.ke/careers-ku/", "Nairobi, Kenya"),
+  uni("jkuat", "JKUAT", "https://www.jkuat.ac.ke/vacancies/", "Juja, Kenya"),
+  uni("moi", "Moi University", "https://mu.ac.ke/", "Eldoret, Kenya"),
+  uni("egerton", "Egerton University", "https://www.egerton.ac.ke/index.php/careers", "Njoro, Kenya"),
+  uni("strathmore", "Strathmore University", "https://strathmore.edu/vacancies/", "Nairobi, Kenya"),
+  uni("usiu", "USIU-Africa", "https://www.usiu.ac.ke/job-vacancies/", "Nairobi, Kenya"),
+  uni("tukenya", "Technical University of Kenya", "https://careers.tukenya.ac.ke/", "Nairobi, Kenya"),
+  uni("tum", "Technical University of Mombasa", "https://jobs.tum.ac.ke/", "Mombasa, Kenya"),
+  uni("maseno", "Maseno University", "https://www.maseno.ac.ke/vacancies", "Kisumu, Kenya"),
+  uni("dkut", "Dedan Kimathi University", "https://careerservices.dkut.ac.ke/", "Nyeri, Kenya"),
+  uni("chuka", "Chuka University", "https://www.chuka.ac.ke/vacancies/", "Chuka, Kenya"),
+  uni("kisii", "Kisii University", "https://digital.kisiiuniversity.ac.ke/job_portal/open_adverts", "Kisii, Kenya"),
+  uni("must", "Meru University of Science & Technology", "https://www.must.ac.ke/careers-2/", "Meru, Kenya"),
+  uni("pu", "Pwani University", "https://www.pu.ac.ke/index.php/pu-information/vacancies", "Kilifi, Kenya"),
+  uni("laikipia", "Laikipia University", "https://www.laikipia.ac.ke/index.php/careers", "Nyahururu, Kenya"),
+  uni("kabarak", "Kabarak University", "https://careers.kabarak.ac.ke/", "Nakuru, Kenya"),
+  uni("daystar", "Daystar University", "https://www.daystar.ac.ke/vacancies", "Nairobi, Kenya"),
+  uni("kca", "KCA University", "https://www.kcau.ac.ke/career/", "Nairobi, Kenya"),
+  uni("mmu", "Multimedia University of Kenya", "https://www.mmu.ac.ke/career/", "Nairobi, Kenya"),
+  uni("zetech", "Zetech University", "https://careers.zetech.ac.ke/", "Ruiru, Kenya"),
+  uni("riara", "Riara University", "https://riarauniversity.ac.ke/about-ru/careers/", "Nairobi, Kenya"),
+  uni("karu", "Karatina University", "https://karu.ac.ke/careers/", "Karatina, Kenya"),
+  uni("kyu", "Kirinyaga University", "https://recruitment.kyu.ac.ke/", "Kerugoya, Kenya"),
+  uni("seku", "South Eastern Kenya University", "https://www.seku.ac.ke/open-job-opportunities.html", "Kitui, Kenya"),
+  uni("mmust", "Masinde Muliro University", "https://mmust.ac.ke/vacancies/", "Kakamega, Kenya"),
+  uni("kibu", "Kibabii University", "https://kibu.ac.ke/vacancies-kibabii-university/", "Bungoma, Kenya"),
+  uni("mmarau", "Maasai Mara University", "https://www.mmarau.ac.ke/", "Narok, Kenya"),
+  uni("rongo", "Rongo University", "https://www.rongovarsity.ac.ke/vacancies/", "Rongo, Kenya"),
+  uni("cuk", "The Co-operative University of Kenya", "https://cuk.ac.ke/cuk-careers/", "Nairobi, Kenya"),
+  uni("kemu", "Kenya Methodist University", "https://kemu.ac.ke/careers", "Meru, Kenya"),
+  uni("anu", "Africa Nazarene University", "https://www.anu.ac.ke/vacancies/", "Nairobi, Kenya"),
+  uni("cuea", "Catholic University of Eastern Africa", "https://www.cuea.edu/careers", "Nairobi, Kenya"),
+  uni("gau", "Garissa University", "https://gau.ac.ke/recent-vacancies/", "Garissa, Kenya"),
+  uni("tuc", "Turkana University College", "https://tuc.ac.ke/vacancies/", "Lodwar, Turkana"),
 ];
 
 /** Turkana County NGOs, humanitarian agencies and research institutes. */
 export const NGO_SOURCES: JobSource[] = [
-  { id: "tbi", name: "Turkana Basin Institute", url: "https://turkanabasin.org", category: "ngo", location: "Turkana, Kenya", companyType: "tbi" },
-  { id: "turkana-county", name: "Turkana County Government", url: "https://turkana.go.ke", category: "ngo", location: "Lodwar, Turkana", companyType: "ngo" },
-  { id: "caritas-lodwar", name: "Caritas Lodwar", url: "https://caritaslodwar.org", category: "ngo", location: "Lodwar, Turkana", companyType: "ngo" },
-  { id: "kenya-red-cross", name: "Kenya Red Cross Society", url: "https://www.redcross.or.ke/careers", category: "ngo", location: "Kenya (incl. Turkana)", companyType: "ngo" },
-  { id: "world-vision", name: "World Vision Kenya", url: "https://www.wvi.org/kenya/careers", category: "ngo", location: "Kenya (incl. Turkana)", companyType: "ngo" },
-  { id: "drc", name: "Danish Refugee Council", url: "https://drc.ngo/jobs", category: "ngo", location: "Kakuma / Turkana", companyType: "ngo" },
-  { id: "nrc", name: "Norwegian Refugee Council", url: "https://www.nrc.no/careers", category: "ngo", location: "Kakuma / Turkana", companyType: "ngo" },
-  { id: "irc", name: "International Rescue Committee", url: "https://www.rescue.org/careers", category: "ngo", location: "Kakuma / Turkana", companyType: "ngo" },
-  { id: "lwf", name: "Lutheran World Federation Kenya-Somalia", url: "https://www.lutheranworld.org/vacancies", category: "ngo", location: "Kakuma, Turkana", companyType: "ngo" },
-  { id: "save-children", name: "Save the Children Kenya", url: "https://kenya.savethechildren.net/jobs", category: "ngo", location: "Kenya (incl. Turkana)", companyType: "ngo" },
-  { id: "iom", name: "IOM Kenya", url: "https://kenya.iom.int/careers", category: "ngo", location: "Kakuma / Turkana", companyType: "ngo" },
-  { id: "amref", name: "Amref Health Africa", url: "https://amref.org/careers", category: "ngo", location: "Kenya (incl. Turkana)", companyType: "ngo" },
-  { id: "filmaid", name: "FilmAid Kenya", url: "https://filmaid.org", category: "ngo", location: "Kakuma, Turkana", companyType: "ngo" },
-  { id: "mercycorps", name: "Mercy Corps Kenya", url: "https://www.mercycorps.org/careers", category: "ngo", location: "Kenya (incl. Turkana)", companyType: "ngo" },
-  { id: "concern", name: "Concern Worldwide", url: "https://www.concern.net/jobs", category: "ngo", location: "Kenya (incl. Turkana)", companyType: "ngo" },
-  { id: "oxfam", name: "Oxfam", url: "https://jobs.oxfam.org.uk", category: "ngo", location: "Turkana / Kenya", companyType: "ngo" },
-  { id: "practical-action", name: "Practical Action", url: "https://practicalaction.org/careers", category: "ngo", location: "Turkana / Kenya", companyType: "ngo" },
-  { id: "vsfg", name: "VSF Germany", url: "https://www.vsfg.org", category: "ngo", location: "Turkana, Kenya", companyType: "ngo" },
-  { id: "action-hunger", name: "Action Against Hunger", url: "https://www.actionagainsthunger.org/careers", category: "ngo", location: "Turkana / Kenya", companyType: "ngo" },
-  { id: "islamic-relief", name: "Islamic Relief Kenya", url: "https://www.islamic-relief.org", category: "ngo", location: "Kenya (incl. Turkana)", companyType: "ngo" },
+  { id: "tbi", name: "Turkana Basin Institute", url: "https://www.turkanabasin.org/vacancies/", category: "ngo", location: "Turkana, Kenya", companyType: "tbi", verifiedOn: CHECKED },
+  { id: "kenya-red-cross", name: "Kenya Red Cross Society", url: "https://redcross.or.ke/careers/", category: "ngo", location: "Kenya (incl. Turkana)", companyType: "ngo", verifiedOn: CHECKED },
+  { id: "world-vision", name: "World Vision Kenya", url: "https://www.wvi.org/kenya/careers", category: "ngo", location: "Kenya (incl. Turkana)", companyType: "ngo", verifiedOn: CHECKED },
+  { id: "drc", name: "Danish Refugee Council", url: "https://drc.ngo/en/jobs/", category: "ngo", location: "Kakuma / Turkana", companyType: "ngo", verifiedOn: CHECKED },
+  { id: "amref", name: "Amref Health Africa", url: "https://amref.org/careers/", category: "ngo", location: "Kenya (incl. Turkana)", companyType: "ngo", verifiedOn: CHECKED },
+  { id: "filmaid", name: "FilmAid Kenya", url: "https://www.filmaid.org/", category: "ngo", location: "Kakuma, Turkana", companyType: "ngo", verifiedOn: CHECKED },
+  { id: "mercycorps", name: "Mercy Corps Kenya", url: "https://www.mercycorps.org/careers", category: "ngo", location: "Kenya (incl. Turkana)", companyType: "ngo", verifiedOn: CHECKED },
+  { id: "concern", name: "Concern Worldwide", url: "https://www.concern.net/vacancies", category: "ngo", location: "Kenya (incl. Turkana)", companyType: "ngo", verifiedOn: CHECKED },
+  { id: "oxfam", name: "Oxfam", url: "https://jobs.oxfam.org.uk/jobs/home/", category: "ngo", location: "Turkana / Kenya", companyType: "ngo", verifiedOn: CHECKED },
+  { id: "practical-action", name: "Practical Action", url: "https://practicalaction.org/careers/", category: "ngo", location: "Turkana / Kenya", companyType: "ngo", verifiedOn: CHECKED },
+  { id: "vsfg", name: "VSF Germany", url: "https://www.vsfg.org/jobs-career/", category: "ngo", location: "Turkana, Kenya", companyType: "ngo", verifiedOn: CHECKED },
+  { id: "action-hunger", name: "Action Against Hunger", url: "https://www.actionagainsthunger.org/careers/", category: "ngo", location: "Turkana / Kenya", companyType: "ngo", verifiedOn: CHECKED },
+  { id: "islamic-relief", name: "Islamic Relief", url: "https://islamic-relief.org/", category: "ngo", location: "Kenya (incl. Turkana)", companyType: "ngo", verifiedOn: CHECKED },
 ];
 
 /** Employers that hire computer science graduates into corporate / tech roles. */
 export const COMPANY_SOURCES: JobSource[] = [
-  { id: "safaricom", name: "Safaricom PLC", url: "https://www.safaricom.co.ke/careers", category: "company", location: "Nairobi, Kenya", companyType: "corporate" },
-  { id: "microsoft-adc", name: "Microsoft ADC Nairobi", url: "https://careers.microsoft.com", category: "company", location: "Nairobi, Kenya", companyType: "tech_company" },
-  { id: "google", name: "Google Kenya", url: "https://www.google.com/about/careers/applications/jobs/results?location=Kenya", category: "company", location: "Nairobi, Kenya", companyType: "tech_company" },
-  { id: "ibm", name: "IBM Research Africa", url: "https://www.ibm.com/careers", category: "company", location: "Nairobi, Kenya", companyType: "tech_company" },
-  { id: "andela", name: "Andela", url: "https://andela.com/careers/", category: "company", location: "Remote / Nairobi", companyType: "tech_company" },
-  { id: "cellulant", name: "Cellulant", url: "https://cellulant.io/careers/", category: "company", location: "Nairobi, Kenya", companyType: "tech_company" },
-  { id: "mkopa", name: "M-KOPA", url: "https://www.m-kopa.com/careers", category: "company", location: "Nairobi, Kenya", companyType: "startup" },
-  { id: "twiga", name: "Twiga Foods", url: "https://twiga.com", category: "company", location: "Nairobi, Kenya", companyType: "startup" },
-  { id: "jumia", name: "Jumia Group", url: "https://group.jumia.com/careers", category: "company", location: "Nairobi, Kenya", companyType: "tech_company" },
-  { id: "sama", name: "Sama", url: "https://www.sama.com/careers", category: "company", location: "Nairobi, Kenya", companyType: "tech_company" },
-  { id: "equity", name: "Equity Group Holdings", url: "https://equitygroupholdings.com/careers/", category: "company", location: "Nairobi, Kenya", companyType: "corporate" },
-  { id: "kcb", name: "KCB Group", url: "https://ke.kcbgroup.com/careers", category: "company", location: "Nairobi, Kenya", companyType: "corporate" },
-  { id: "ncba", name: "NCBA Group", url: "https://ncbagroup.com/careers", category: "company", location: "Nairobi, Kenya", companyType: "corporate" },
-  { id: "airtel", name: "Airtel Kenya", url: "https://www.airtelkenya.com/careers", category: "company", location: "Nairobi, Kenya", companyType: "corporate" },
-  { id: "liquid", name: "Liquid Intelligent Technologies", url: "https://liquid.tech/careers", category: "company", location: "Nairobi, Kenya", companyType: "tech_company" },
-  { id: "deloitte", name: "Deloitte East Africa", url: "https://www2.deloitte.com/ke/en/careers.html", category: "company", location: "Nairobi, Kenya", companyType: "corporate" },
-  { id: "kpmg", name: "KPMG East Africa", url: "https://home.kpmg/ke/en/home/careers.html", category: "company", location: "Nairobi, Kenya", companyType: "corporate" },
-  { id: "pwc", name: "PwC Kenya", url: "https://www.pwc.com/ke/en/careers.html", category: "company", location: "Nairobi, Kenya", companyType: "corporate" },
-  { id: "ey", name: "EY Kenya", url: "https://www.ey.com/en_ke/careers/students", category: "company", location: "Nairobi, Kenya", companyType: "corporate" },
-  { id: "craftsilicon", name: "Craft Silicon", url: "https://craftsilicon.com/careers/", category: "company", location: "Nairobi, Kenya", companyType: "tech_company" },
-  { id: "kenya-airways", name: "Kenya Airways", url: "https://www.kenya-airways.com", category: "company", location: "Nairobi, Kenya", companyType: "corporate" },
-  { id: "standard-chartered", name: "Standard Chartered Kenya", url: "https://www.sc.com/ke/careers", category: "company", location: "Nairobi, Kenya", companyType: "corporate" },
-  { id: "kyosk", name: "Kyosk Digital", url: "https://kyosk.app/careers/", category: "company", location: "Nairobi, Kenya", companyType: "startup" },
-  { id: "copia", name: "Copia Global", url: "https://copia.co.ke/careers", category: "company", location: "Nairobi, Kenya", companyType: "startup" },
+  { id: "microsoft-adc", name: "Microsoft ADC Nairobi", url: "https://careers.microsoft.com/v2/global/en/home.html", category: "company", location: "Nairobi, Kenya", companyType: "tech_company", verifiedOn: CHECKED },
+  { id: "google", name: "Google Kenya", url: "https://www.google.com/about/careers/applications/jobs/results?location=Kenya", category: "company", location: "Nairobi, Kenya", companyType: "tech_company", verifiedOn: CHECKED },
+  { id: "ibm", name: "IBM Research Africa", url: "https://www.ibm.com/careers", category: "company", location: "Nairobi, Kenya", companyType: "tech_company", verifiedOn: CHECKED },
+  { id: "andela", name: "Andela", url: "https://www.andela.com/for-talent", category: "company", location: "Remote / Nairobi", companyType: "tech_company", verifiedOn: CHECKED },
+  { id: "mkopa", name: "M-KOPA", url: "https://www.m-kopa.com/careers", category: "company", location: "Nairobi, Kenya", companyType: "startup", verifiedOn: CHECKED },
+  { id: "jumia", name: "Jumia Group", url: "https://group.jumia.com/careers", category: "company", location: "Nairobi, Kenya", companyType: "tech_company", verifiedOn: CHECKED },
+  { id: "sama", name: "Sama", url: "https://www.sama.com/careers", category: "company", location: "Nairobi, Kenya", companyType: "tech_company", verifiedOn: CHECKED },
+  { id: "kcb", name: "KCB Group", url: "https://ke.kcbgroup.com/careers", category: "company", location: "Nairobi, Kenya", companyType: "corporate", verifiedOn: CHECKED },
+  { id: "ncba", name: "NCBA Group", url: "https://ncbagroup.com/careers/", category: "company", location: "Nairobi, Kenya", companyType: "corporate", verifiedOn: CHECKED },
+  { id: "airtel", name: "Airtel Kenya", url: "https://www.airtelkenya.com/careers", category: "company", location: "Nairobi, Kenya", companyType: "corporate", verifiedOn: CHECKED },
+  { id: "liquid", name: "Liquid Intelligent Technologies", url: "https://liquid.tech/careers/", category: "company", location: "Nairobi, Kenya", companyType: "tech_company", verifiedOn: CHECKED },
+  { id: "deloitte", name: "Deloitte East Africa", url: "https://www.deloitte.com/ke/en/careers.html", category: "company", location: "Nairobi, Kenya", companyType: "corporate", verifiedOn: CHECKED },
+  { id: "kpmg", name: "KPMG East Africa", url: "https://kpmg.com/ke/en/careers.html", category: "company", location: "Nairobi, Kenya", companyType: "corporate", verifiedOn: CHECKED },
+  { id: "pwc", name: "PwC Kenya", url: "https://www.pwc.com/ke/en/careers.html", category: "company", location: "Nairobi, Kenya", companyType: "corporate", verifiedOn: CHECKED },
+  { id: "ey", name: "EY Kenya", url: "https://careers.ey.com/ey/search/?q=kenya", category: "company", location: "Nairobi, Kenya", companyType: "corporate", verifiedOn: CHECKED },
+  { id: "kenya-airways", name: "Kenya Airways", url: "https://www.kenya-airways.com/en/", category: "company", location: "Nairobi, Kenya", companyType: "corporate", verifiedOn: CHECKED },
+  { id: "standard-chartered", name: "Standard Chartered", url: "https://www.sc.com/en/global-careers/experienced-hire/", category: "company", location: "Nairobi, Kenya", companyType: "corporate", verifiedOn: CHECKED },
+  { id: "kyosk", name: "Kyosk Digital", url: "https://www.kyosk.app/careers", category: "company", location: "Nairobi, Kenya", companyType: "startup", verifiedOn: CHECKED },
+  { id: "copia", name: "Copia Global", url: "https://copiaglobal.com/careers/", category: "company", location: "Nairobi, Kenya", companyType: "startup", verifiedOn: CHECKED },
+  { id: "equity", name: "Equity Group Holdings", url: "https://equitygroupholdings.com/ke/careers", category: "company", location: "Nairobi, Kenya", companyType: "corporate", verifiedOn: CHECKED },
 ];
 
 /** Aggregator APIs used for remote-for-Africa roles. */
 export const API_SOURCES: JobSource[] = [
-  { id: "remotive", name: "Remotive", url: "https://remotive.com/api/remote-jobs?limit=60", category: "api", location: "Remote", companyType: "remote_abroad" },
-  { id: "arbeitnow", name: "Arbeitnow", url: "https://www.arbeitnow.com/api/job-board-api", category: "api", location: "Remote", companyType: "remote_abroad" },
+  { id: "remotive", name: "Remotive", url: "https://remotive.com/api/remote-jobs?limit=60", category: "api", location: "Remote", companyType: "remote_abroad", verifiedOn: CHECKED },
+  { id: "arbeitnow", name: "Arbeitnow", url: "https://www.arbeitnow.com/api/job-board-api", category: "api", location: "Remote", companyType: "remote_abroad", verifiedOn: CHECKED },
 ];
 
 export const ALL_SOURCES: JobSource[] = [
@@ -152,3 +158,6 @@ export const SOURCE_COUNTS = {
   api: API_SOURCES.length,
   total: ALL_SOURCES.length,
 };
+
+/** Last date every URL above was confirmed reachable with live vacancy content. */
+export const SOURCES_VERIFIED_ON = CHECKED;

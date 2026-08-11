@@ -123,12 +123,13 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-40 border-b border-border/80 bg-background/85 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-8">
-          <Link to="/" aria-label="Ayglobe Lite home">
+      <header className="sticky top-0 z-40 border-b border-border/80 bg-background/85 backdrop-blur pt-[env(safe-area-inset-top)]">
+        <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-2.5 md:px-8 md:py-3">
+          <Link to="/" aria-label="Ayglobe Lite home" className="min-w-0">
             <Logo />
           </Link>
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
+
             {!online && (
               <span className="text-data inline-flex items-center gap-1 rounded-full border border-primary/40 bg-primary/12 px-3 py-1 text-xs text-primary-light">
                 <WifiOff className="h-3.5 w-3.5" /> Offline
@@ -178,7 +179,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           </nav>
         </aside>
 
-        <main className="min-w-0 flex-1 pb-28 pt-6 md:pb-12">{children}</main>
+        <main className="min-w-0 flex-1 pb-[calc(6.5rem+env(safe-area-inset-bottom))] pt-5 md:pb-12 md:pt-6">
+          {children}
+        </main>
+
       </div>
 
       <footer className="hidden border-t border-border/70 py-6 md:block">
@@ -198,26 +202,34 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       </footer>
 
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 backdrop-blur md:hidden">
-        <div className="flex">
+      <nav
+        aria-label="Primary"
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
+      >
+        <div className="grid grid-cols-7">
           {NAV.map((item) => {
             const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
             return (
               <Link
                 key={item.to}
                 to={item.to}
+                aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex min-h-14 flex-1 flex-col items-center justify-center gap-1 py-2 text-[11px] text-muted-foreground",
+                  "relative flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 px-0.5 py-2 text-[10px] font-medium text-muted-foreground transition-colors active:bg-accent/40",
                   active && "text-primary",
                 )}
               >
-                <item.icon className="h-5 w-5" aria-hidden="true" />
-                {item.label}
+                {active && (
+                  <span className="absolute inset-x-3 top-0 h-0.5 rounded-full bg-primary" />
+                )}
+                <item.icon className="h-5 w-5 shrink-0" aria-hidden="true" />
+                <span className="w-full truncate text-center leading-none">{item.label}</span>
               </Link>
             );
           })}
         </div>
       </nav>
+
     </div>
   );
 }
