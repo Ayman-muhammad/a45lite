@@ -179,7 +179,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           </nav>
         </aside>
 
-        <main className="min-w-0 flex-1 pb-28 pt-6 md:pb-12">{children}</main>
+        <main className="min-w-0 flex-1 pb-[calc(6.5rem+env(safe-area-inset-bottom))] pt-5 md:pb-12 md:pt-6">
+          {children}
+        </main>
+
       </div>
 
       <footer className="hidden border-t border-border/70 py-6 md:block">
