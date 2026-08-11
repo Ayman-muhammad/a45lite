@@ -175,7 +175,7 @@ function Home() {
         </div>
       </section>
 
-      <div className="mt-6 flex gap-2 overflow-x-auto pb-1">
+      <div className="mt-6 -mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
         {FEED_FILTERS.map((f) => (
           <button
             key={f.key}
