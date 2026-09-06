@@ -6,6 +6,7 @@ import { AppShell } from "@/components/AppShell";
 import { JobCard, JobCardSkeleton } from "@/components/JobCard";
 import { SyncPanel } from "@/components/SyncPanel";
 import { useProfile, useSession } from "@/hooks/useSession";
+import { LiveBadge, useRealtimeJobs } from "@/hooks/useRealtimeJobs";
 import { supabase } from "@/integrations/supabase/client";
 import { daysUntil, FEED_FILTERS, fetchJobs, type Job } from "@/lib/jobs";
 import { SOURCE_COUNTS } from "@/lib/sources";
@@ -111,6 +112,7 @@ function Home() {
   const { user } = useSession();
   const { data: profile } = useProfile();
   const { savedIds, toggle } = useToggleSave();
+  const { status: liveStatus } = useRealtimeJobs();
 
   const { data: jobs, isLoading } = useQuery({
     queryKey: ["jobs", feed],
@@ -147,7 +149,10 @@ function Home() {
   return (
     <AppShell>
       <section className="hero-glow animate-rise rounded-3xl border border-border bg-card/40 p-5 sm:p-6 md:p-8">
-        <p className="text-data text-xs tracking-[0.24em] text-primary-light">MISSION CONTROL</p>
+        <div className="flex flex-wrap items-center gap-3">
+          <p className="text-data text-xs tracking-[0.24em] text-primary-light">MISSION CONTROL</p>
+          <LiveBadge status={liveStatus} />
+        </div>
         <h1 className="mt-3 text-2xl font-extrabold tracking-tight text-foreground md:text-3xl">
           {profile?.full_name ? `Karibu, ${profile.full_name.split(" ")[0]}` : "Verified jobs, zero noise"}
         </h1>
