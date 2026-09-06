@@ -68,8 +68,10 @@ export type Database = {
           created_at: string
           custom_cover_letter: string | null
           id: string
+          interview_notes: string | null
           job_id: string
           notes: string | null
+          resume_id: string | null
           status: string
           updated_at: string
           user_id: string
@@ -79,8 +81,10 @@ export type Database = {
           created_at?: string
           custom_cover_letter?: string | null
           id?: string
+          interview_notes?: string | null
           job_id: string
           notes?: string | null
+          resume_id?: string | null
           status?: string
           updated_at?: string
           user_id: string
@@ -90,8 +94,10 @@ export type Database = {
           created_at?: string
           custom_cover_letter?: string | null
           id?: string
+          interview_notes?: string | null
           job_id?: string
           notes?: string | null
+          resume_id?: string | null
           status?: string
           updated_at?: string
           user_id?: string
@@ -102,6 +108,13 @@ export type Database = {
             columns: ["job_id"]
             isOneToOne: false
             referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_applications_resume_id_fkey"
+            columns: ["resume_id"]
+            isOneToOne: false
+            referencedRelation: "resumes"
             referencedColumns: ["id"]
           },
           {
@@ -245,6 +258,7 @@ export type Database = {
           experience_years: number
           fcm_token: string | null
           full_name: string | null
+          headline: string | null
           id: string
           job_type_preference: string[]
           location: string | null
@@ -252,8 +266,10 @@ export type Database = {
           notify_new_jobs: boolean
           onboarded: boolean
           phone: string | null
+          salary_expectation: string | null
           skills: string[]
           subscription_tier: string
+          summary: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -263,6 +279,7 @@ export type Database = {
           experience_years?: number
           fcm_token?: string | null
           full_name?: string | null
+          headline?: string | null
           id: string
           job_type_preference?: string[]
           location?: string | null
@@ -270,8 +287,10 @@ export type Database = {
           notify_new_jobs?: boolean
           onboarded?: boolean
           phone?: string | null
+          salary_expectation?: string | null
           skills?: string[]
           subscription_tier?: string
+          summary?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -281,6 +300,7 @@ export type Database = {
           experience_years?: number
           fcm_token?: string | null
           full_name?: string | null
+          headline?: string | null
           id?: string
           job_type_preference?: string[]
           location?: string | null
@@ -288,8 +308,10 @@ export type Database = {
           notify_new_jobs?: boolean
           onboarded?: boolean
           phone?: string | null
+          salary_expectation?: string | null
           skills?: string[]
           subscription_tier?: string
+          summary?: string | null
         }
         Relationships: []
       }
