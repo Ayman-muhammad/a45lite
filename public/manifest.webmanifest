@@ -1,11 +1,18 @@
 {
+  "id": "/",
   "name": "Ayglobe Lite — Executive Business Planning",
-  "short_name": "Ayglobe Lite",
-  "description": "Executive business planning, chartboards and validated investor-ready plan exports.",
-  "start_url": "/",
+  "short_name": "Ayglobe",
+  "description": "Verified job discovery, executive chartboards and investor-ready business plan exports.",
+  "start_url": "/?source=pwa",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["business", "productivity", "education"],
   "background_color": "#0C0A09",
-  "theme_color": "#F97316",
+  "theme_color": "#0C0A09",
   "icons": [
     {
       "src": "/icon-192.png",
@@ -17,7 +24,39 @@
       "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Search jobs",
+      "short_name": "Search",
+      "url": "/search",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Saved jobs",
+      "short_name": "Saved",
+      "url": "/saved",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Business plan",
+      "short_name": "Plan",
+      "url": "/plan",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Chartboard",
+      "short_name": "Charts",
+      "url": "/chartboard",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
 }
