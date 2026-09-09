@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
+import { ProfileBuilder } from "@/components/ProfileBuilder";
 import { useProfile, useSession } from "@/hooks/useSession";
 import { supabase } from "@/integrations/supabase/client";
 import { PREFERENCE_OPTIONS } from "@/lib/jobs";
@@ -125,6 +126,8 @@ function ProfilePage() {
       <h1 className="text-2xl font-extrabold tracking-tight text-foreground">Profile & settings</h1>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
+        <ProfileBuilder />
+
         <Card title="Career analytics">
           <div className="grid grid-cols-2 gap-3">
             <Metric label="Applications sent" value={stats?.applied ?? 0} />
