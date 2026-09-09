@@ -17,6 +17,7 @@ import { Route as ChartboardRouteImport } from './routes/chartboard'
 import { Route as PlanRouteImport } from './routes/plan'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as AuthenticatedApplicationsRouteImport } from './routes/_authenticated/applications'
+import { Route as AuthenticatedApplyRouteImport } from './routes/_authenticated/apply'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedSavedRouteImport } from './routes/_authenticated/saved'
@@ -62,6 +63,11 @@ const AuthenticatedApplicationsRoute =
     path: '/applications',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedApplyRoute = AuthenticatedApplyRouteImport.update({
+  id: '/apply',
+  path: '/apply',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
@@ -91,6 +97,7 @@ export interface FileRoutesByFullPath {
   '/plan': typeof PlanRoute
   '/search': typeof SearchRoute
   '/applications': typeof AuthenticatedApplicationsRoute
+  '/apply': typeof AuthenticatedApplyRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/saved': typeof AuthenticatedSavedRoute
@@ -104,6 +111,7 @@ export interface FileRoutesByTo {
   '/plan': typeof PlanRoute
   '/search': typeof SearchRoute
   '/applications': typeof AuthenticatedApplicationsRoute
+  '/apply': typeof AuthenticatedApplyRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/saved': typeof AuthenticatedSavedRoute
@@ -119,6 +127,7 @@ export interface FileRoutesById {
   '/plan': typeof PlanRoute
   '/search': typeof SearchRoute
   '/_authenticated/applications': typeof AuthenticatedApplicationsRoute
+  '/_authenticated/apply': typeof AuthenticatedApplyRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/saved': typeof AuthenticatedSavedRoute
@@ -134,6 +143,7 @@ export interface FileRouteTypes {
     | '/plan'
     | '/search'
     | '/applications'
+    | '/apply'
     | '/onboarding'
     | '/profile'
     | '/saved'
@@ -147,6 +157,7 @@ export interface FileRouteTypes {
     | '/plan'
     | '/search'
     | '/applications'
+    | '/apply'
     | '/onboarding'
     | '/profile'
     | '/saved'
@@ -161,6 +172,7 @@ export interface FileRouteTypes {
     | '/plan'
     | '/search'
     | '/_authenticated/applications'
+    | '/_authenticated/apply'
     | '/_authenticated/onboarding'
     | '/_authenticated/profile'
     | '/_authenticated/saved'
@@ -236,6 +248,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedApplicationsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/apply': {
+      id: '/_authenticated/apply'
+      path: '/apply'
+      fullPath: '/apply'
+      preLoaderRoute: typeof AuthenticatedApplyRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/onboarding': {
       id: '/_authenticated/onboarding'
       path: '/onboarding'
@@ -269,6 +288,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedApplicationsRoute: typeof AuthenticatedApplicationsRoute
+  AuthenticatedApplyRoute: typeof AuthenticatedApplyRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedSavedRoute: typeof AuthenticatedSavedRoute
@@ -276,6 +296,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedApplicationsRoute: AuthenticatedApplicationsRoute,
+  AuthenticatedApplyRoute: AuthenticatedApplyRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedSavedRoute: AuthenticatedSavedRoute,

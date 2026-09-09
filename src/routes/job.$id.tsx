@@ -235,6 +235,13 @@ function JobDetail() {
                   <Copy className="h-4 w-4" /> {job.apply_email}
                 </button>
               )}
+              <Link
+                to="/apply"
+                search={{ job: job.id }}
+                className="mt-3 flex min-h-11 items-center gap-2 rounded-xl border border-primary/40 px-4 text-sm font-semibold text-primary-light"
+              >
+                Apply here — resume, cover letter & notes
+              </Link>
             </div>
 
             <div className="mt-4 flex flex-wrap gap-2">
