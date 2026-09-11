@@ -10,6 +10,7 @@ import {
   LogOut,
   WifiOff,
   FileText,
+  Files,
   BarChart3,
 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
@@ -22,6 +23,7 @@ const NAV = [
   { to: "/", label: "Home", icon: Home },
   { to: "/search", label: "Search", icon: Search },
   { to: "/plan", label: "Plan", icon: FileText },
+  { to: "/documents", label: "Docs", icon: Files },
   { to: "/chartboard", label: "Charts", icon: BarChart3 },
   { to: "/saved", label: "Saved", icon: Heart },
   { to: "/applications", label: "Tracker", icon: KanbanSquare },
@@ -206,7 +208,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         aria-label="Primary"
         className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
       >
-        <div className="grid grid-cols-7">
+        <div className="grid min-w-[32rem] grid-cols-8 overflow-x-auto">
           {NAV.map((item) => {
             const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
             return (
