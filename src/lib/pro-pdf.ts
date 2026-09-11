@@ -110,6 +110,7 @@ export function generateProDocumentPDF(
   ];
   let my = 178;
   for (const [label, value] of metaRows) {
+    if (!label || !value) continue;
     doc.setFont(t.headingFont, "bold");
     doc.setFontSize(7.5);
     doc.setTextColor(...t.accent);
