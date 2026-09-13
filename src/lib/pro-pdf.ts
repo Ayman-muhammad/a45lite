@@ -1,7 +1,7 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import type { ProDocument, DocTheme, DocType } from "@/lib/pro-doc";
-import { DOC_TYPE_LABELS } from "@/lib/pro-doc";
+import { DOC_TYPE_LABELS, ProDocumentSchema } from "@/lib/pro-doc";
 
 type RGB = [number, number, number];
 
@@ -63,6 +63,8 @@ export function generateProDocumentPDF(
   theme: DocTheme,
   docType: DocType,
 ): jsPDF {
+  // Normalize: fills default arrays/strings for any sparse block payloads.
+  document = ProDocumentSchema.parse(document);
   const t = THEMES[theme];
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const dated = new Date().toLocaleDateString("en-GB", {
