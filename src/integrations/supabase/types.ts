@@ -249,6 +249,77 @@ export type Database = {
           },
         ]
       }
+      portfolio_items: {
+        Row: {
+          created_at: string
+          description: string | null
+          end_date: string | null
+          file_name: string | null
+          file_url: string | null
+          highlights: string[]
+          id: string
+          is_featured: boolean
+          kind: string
+          link_url: string | null
+          organisation: string | null
+          role: string | null
+          sort_order: number
+          start_date: string | null
+          tags: string[]
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          file_name?: string | null
+          file_url?: string | null
+          highlights?: string[]
+          id?: string
+          is_featured?: boolean
+          kind?: string
+          link_url?: string | null
+          organisation?: string | null
+          role?: string | null
+          sort_order?: number
+          start_date?: string | null
+          tags?: string[]
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          file_name?: string | null
+          file_url?: string | null
+          highlights?: string[]
+          id?: string
+          is_featured?: boolean
+          kind?: string
+          link_url?: string | null
+          organisation?: string | null
+          role?: string | null
+          sort_order?: number
+          start_date?: string | null
+          tags?: string[]
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portfolio_items_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
