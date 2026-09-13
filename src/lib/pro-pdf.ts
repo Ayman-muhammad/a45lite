@@ -63,6 +63,8 @@ export function generateProDocumentPDF(
   theme: DocTheme,
   docType: DocType,
 ): jsPDF {
+  // Normalize: fills default arrays/strings for any sparse block payloads.
+  document = ProDocumentSchema.parse(document);
   const t = THEMES[theme];
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const dated = new Date().toLocaleDateString("en-GB", {
