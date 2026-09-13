@@ -1,7 +1,7 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import type { ProDocument, DocTheme, DocType } from "@/lib/pro-doc";
-import { DOC_TYPE_LABELS } from "@/lib/pro-doc";
+import { DOC_TYPE_LABELS, ProDocumentSchema } from "@/lib/pro-doc";
 
 type RGB = [number, number, number];
 
